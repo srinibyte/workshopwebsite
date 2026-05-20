@@ -27,7 +27,7 @@
 <div class="site-shell">
 	<header class="site-header">
 		<a class="brand" href="/" aria-label="Prahlad's Workshop home">
-			<span class="brand-mark" aria-hidden="true">PW</span>
+			<span class="brand-mark" aria-hidden="true"><span class="card-pip"></span></span>
 			<span>
 				<strong>Prahlad's Workshop</strong>
 				<small>projects, art, blog, curiosities</small>

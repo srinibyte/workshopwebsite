@@ -1,18 +1,21 @@
 :root {
 	font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-	color: #201b14;
-	background: #f6f0e2;
-	--paper: #fff9ea;
-	--paper-deep: #eadfc7;
-	--ink: #201b14;
-	--muted: #655d50;
-	--line: #241d15;
-	--rust: #c85d32;
-	--green: #2c766b;
-	--blue: #315f8f;
-	--brass: #c69a2d;
-	--pink: #9a557e;
+	color: #18231c;
+	background: #f2f0e4;
+	--paper: #fffdf0;
+	--paper-deep: #dfe6cf;
+	--ink: #18231c;
+	--muted: #586454;
+	--line: #172117;
+	--rust: #b65d36;
+	--green: #2f7450;
+	--moss: #6f8d5f;
+	--mint: #c8d8b5;
+	--blue: #356b77;
+	--brass: #b99b45;
+	--pink: #8f5d78;
 	--shadow: 6px 6px 0 var(--line);
+	--heading-font: ui-rounded, "SF Pro Rounded", "Avenir Next", "Segoe UI", system-ui, sans-serif;
 }
 
 * {
@@ -24,10 +27,10 @@ body {
 	min-width: 320px;
 	color: var(--ink);
 	background:
-		linear-gradient(rgba(32, 27, 20, 0.04) 1px, transparent 1px),
-		linear-gradient(90deg, rgba(32, 27, 20, 0.04) 1px, transparent 1px),
-		radial-gradient(circle at 12% 10%, rgba(200, 93, 50, 0.12), transparent 24%),
-		radial-gradient(circle at 88% 18%, rgba(49, 95, 143, 0.1), transparent 24%), #f6f0e2;
+		linear-gradient(rgba(24, 35, 28, 0.045) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(24, 35, 28, 0.04) 1px, transparent 1px),
+		radial-gradient(circle at 12% 10%, rgba(111, 141, 95, 0.18), transparent 26%),
+		radial-gradient(circle at 88% 18%, rgba(47, 116, 80, 0.13), transparent 26%), #f2f0e4;
 	background-size: 24px 24px, 24px 24px, auto, auto;
 }
 
@@ -57,18 +60,63 @@ a {
 }
 
 .brand-mark {
-	display: grid;
-	width: 48px;
-	height: 48px;
+	position: relative;
+	display: block;
+	width: 42px;
+	height: 52px;
 	place-items: center;
 	border: 3px solid var(--line);
 	background:
-		linear-gradient(45deg, transparent 0 48%, rgba(255, 255, 255, 0.22) 48% 52%, transparent 52%),
-		var(--brass);
-	font-family: ui-serif, Georgia, "Times New Roman", serif;
-	font-weight: 900;
+		linear-gradient(135deg, rgba(47, 116, 80, 0.14), transparent 55%),
+		#fffdf0;
+	border-radius: 3px;
 	box-shadow: var(--shadow);
 	image-rendering: pixelated;
+}
+
+.brand-mark::before,
+.brand-mark::after,
+.card-pip::before,
+.card-pip::after {
+	position: absolute;
+	width: 8px;
+	height: 8px;
+	content: "";
+	background: var(--green);
+	box-shadow:
+		8px 0 0 var(--green),
+		4px 8px 0 var(--green);
+}
+
+.brand-mark::before {
+	top: 8px;
+	left: 8px;
+}
+
+.brand-mark::after {
+	right: 8px;
+	bottom: 8px;
+	transform: rotate(180deg);
+}
+
+.card-pip::before {
+	top: 22px;
+	left: 14px;
+	background: var(--rust);
+	box-shadow:
+		8px 0 0 var(--rust),
+		4px 8px 0 var(--rust);
+}
+
+.card-pip::after {
+	top: 2px;
+	right: 2px;
+	width: 10px;
+	height: 10px;
+	border-left: 3px solid var(--line);
+	border-bottom: 3px solid var(--line);
+	background: #e2ead6;
+	box-shadow: none;
 }
 
 .brand strong,
@@ -77,8 +125,9 @@ a {
 }
 
 .brand strong {
-	font-family: ui-serif, Georgia, "Times New Roman", serif;
-	font-size: 1.15rem;
+	font-family: var(--heading-font);
+	font-size: 1.18rem;
+	letter-spacing: -0.02em;
 }
 
 .brand small {
@@ -103,7 +152,7 @@ nav a,
 .card-links a {
 	position: relative;
 	border: 2px solid var(--line);
-	background: linear-gradient(#fffdf4, #dacfb8);
+	background: linear-gradient(#fffff6, #dfe6cf);
 	padding: 9px 12px;
 	font-size: 0.8rem;
 	font-weight: 900;
@@ -216,15 +265,15 @@ main {
 h1,
 h2,
 h3 {
-	font-family: ui-serif, Georgia, "Times New Roman", serif;
-	letter-spacing: 0;
+	font-family: var(--heading-font);
+	letter-spacing: -0.045em;
 }
 
 h1 {
 	max-width: 840px;
 	margin: 0;
 	font-size: clamp(3.3rem, 8.5vw, 8.6rem);
-	line-height: 0.88;
+	line-height: 0.86;
 }
 
 .lede {
@@ -274,8 +323,9 @@ time {
 }
 
 .gauge strong {
-	font-family: ui-serif, Georgia, "Times New Roman", serif;
+	font-family: var(--heading-font);
 	font-size: 1.3rem;
+	letter-spacing: -0.03em;
 }
 
 .tool-row {
@@ -356,9 +406,10 @@ time {
 
 .section-heading p {
 	margin: 0;
-	font-family: ui-serif, Georgia, "Times New Roman", serif;
+	font-family: var(--heading-font);
 	font-size: 1.6rem;
 	font-weight: 900;
+	letter-spacing: -0.035em;
 }
 
 .section-heading.compact p {
