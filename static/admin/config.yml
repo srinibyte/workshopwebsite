@@ -50,12 +50,28 @@ collections:
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
-      - { label: "Kind", name: "kind", widget: "select", options: ["music", "film", "visual", "writing", "other"], default: "music" }
+      - { label: "Kind", name: "kind", widget: "select", options: ["music", "cinema", "book", "film", "visual", "recommendation", "other"], default: "music" }
+      - { label: "Creator / Artist / Author", name: "creator", widget: "string", required: false }
+      - { label: "Rating / Shelf Label", name: "rating", widget: "string", required: false }
       - { label: "Summary", name: "summary", widget: "text" }
       - { label: "Tags", name: "tags", widget: "list", required: false }
       - { label: "Accent Color", name: "accent", widget: "color", required: false }
       - { label: "Featured", name: "featured", widget: "boolean", default: false }
       - { label: "External URL", name: "url", widget: "string", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "shenanigans"
+    label: "Shenanigans"
+    folder: "src/content/shenanigans"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "Summary", name: "summary", widget: "text" }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - { label: "Accent Color", name: "accent", widget: "color", required: false }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false }
       - { label: "Body", name: "body", widget: "markdown" }
 
   - name: "interests"

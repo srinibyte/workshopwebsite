@@ -1,4 +1,4 @@
-export type Collection = 'projects' | 'blog' | 'art' | 'notes' | 'interests';
+export type Collection = 'projects' | 'blog' | 'art' | 'shenanigans' | 'notes' | 'interests';
 
 export type ContentItem = {
 	slug: string;
@@ -10,6 +10,8 @@ export type ContentItem = {
 	status?: string;
 	accent?: string;
 	kind?: string;
+	creator?: string;
+	rating?: string;
 	url?: string;
 	featured?: boolean;
 	body: string;
@@ -22,7 +24,14 @@ const modules = import.meta.glob('/src/content/**/*.md', {
 	import: 'default'
 }) as Record<string, string>;
 
-export const collections: Collection[] = ['projects', 'blog', 'art', 'notes', 'interests'];
+export const collections: Collection[] = [
+	'projects',
+	'blog',
+	'art',
+	'shenanigans',
+	'notes',
+	'interests'
+];
 
 function parseFrontmatter(source: string) {
 	const match = /^---\n([\s\S]*?)\n---\n?([\s\S]*)$/.exec(source);
@@ -137,6 +146,8 @@ for (const [path, source] of Object.entries(modules)) {
 		...(meta.status ? { status: String(meta.status) } : {}),
 		...(meta.accent ? { accent: String(meta.accent) } : {}),
 		...(meta.kind ? { kind: String(meta.kind) } : {}),
+		...(meta.creator ? { creator: String(meta.creator) } : {}),
+		...(meta.rating ? { rating: String(meta.rating) } : {}),
 		...(meta.url ? { url: String(meta.url) } : {}),
 		featured: Boolean(meta.featured),
 		body,

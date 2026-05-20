@@ -16,8 +16,14 @@
 				<h1>Prahlad's Workshop</h1>
 				<p class="lede">
 					Projects, essays, art, music, film notes, and the strange little obsessions currently
-					scattered across the desk.
+					scattered across the desk. Off-white, clicky, pixel-stuffed, and built to be updated.
 				</p>
+				<div class="hero-actions">
+					<a href="/projects">Projects</a>
+					<a href="/blog">Blog</a>
+					<a href="/art">Art</a>
+					<a href="/shenanigans">Shenanigans</a>
+				</div>
 			</div>
 			<div class="bench-card" aria-label="Workshop status">
 				<div class="gauge">
@@ -104,7 +110,13 @@
 			<span class="bay-icon art-icon" aria-hidden="true"></span>
 			<small>03</small>
 			<h2>Art</h2>
-			<p>Music I love, music I make, film sketches, and future screenings.</p>
+			<p>Music, cinema, books, recommendations, and things I make.</p>
+		</a>
+		<a class="bay sound-tile" href="/shenanigans">
+			<span class="bay-icon puff-icon" aria-hidden="true"></span>
+			<small>04</small>
+			<h2>Shenanigans</h2>
+			<p>Loose thoughts, snack criticism, tiny theories, and useful nonsense.</p>
 		</a>
 	</section>
 

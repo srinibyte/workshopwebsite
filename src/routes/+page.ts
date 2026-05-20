@@ -9,6 +9,7 @@ export function load() {
 		projects: getCollection('projects').slice(0, 3),
 		blog: getCollection('blog').slice(0, 3),
 		art: getCollection('art').slice(0, 3),
+		shenanigans: getCollection('shenanigans').slice(0, 3),
 		interests: getCollection('interests')
 	};
 }

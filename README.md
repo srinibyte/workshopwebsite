@@ -26,6 +26,7 @@ Content is stored as Markdown:
 - Projects: `src/content/projects`
 - Blog: `src/content/blog`
 - Art: `src/content/art`
+- Shenanigans: `src/content/shenanigans`
 - Interests ticker: `src/content/interests`
 - Notes: `src/content/notes`
 

@@ -11,24 +11,28 @@ export function playClickSound() {
 	const gain = ctx.createGain();
 	const first = ctx.createOscillator();
 	const second = ctx.createOscillator();
+	const filter = ctx.createBiquadFilter();
 
-	first.type = 'square';
-	second.type = 'triangle';
-	first.frequency.setValueAtTime(880, now);
-	first.frequency.exponentialRampToValueAtTime(520, now + 0.055);
-	second.frequency.setValueAtTime(1320, now + 0.035);
-	second.frequency.exponentialRampToValueAtTime(760, now + 0.09);
+	first.type = 'triangle';
+	second.type = 'sine';
+	first.frequency.setValueAtTime(240, now);
+	first.frequency.exponentialRampToValueAtTime(160, now + 0.045);
+	second.frequency.setValueAtTime(520, now + 0.018);
+	second.frequency.exponentialRampToValueAtTime(300, now + 0.07);
+	filter.type = 'lowpass';
+	filter.frequency.setValueAtTime(1200, now);
 
 	gain.gain.setValueAtTime(0.0001, now);
-	gain.gain.exponentialRampToValueAtTime(0.045, now + 0.01);
-	gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+	gain.gain.exponentialRampToValueAtTime(0.032, now + 0.006);
+	gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.075);
 
-	first.connect(gain);
-	second.connect(gain);
+	first.connect(filter);
+	second.connect(filter);
+	filter.connect(gain);
 	gain.connect(ctx.destination);
 
 	first.start(now);
-	second.start(now + 0.03);
-	first.stop(now + 0.1);
-	second.stop(now + 0.13);
+	second.start(now + 0.016);
+	first.stop(now + 0.075);
+	second.stop(now + 0.085);
 }

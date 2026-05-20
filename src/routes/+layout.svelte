@@ -3,11 +3,12 @@
 	import '../styles.css';
 
 	let { children } = $props();
+	let soundEnabled = $state(true);
 
 	function handlePointerUp(event: PointerEvent) {
 		const target = event.target;
 		if (!(target instanceof Element)) return;
-		if (target.closest('a, button, .sound-tile')) {
+		if (soundEnabled && target.closest('a, button, .sound-tile')) {
 			playClickSound();
 		}
 	}
@@ -37,9 +38,23 @@
 			<a href="/projects">Projects</a>
 			<a href="/blog">Blog</a>
 			<a href="/art">Art</a>
+			<a href="/shenanigans">Shenanigans</a>
 			<a href="/admin/">CMS</a>
 		</nav>
 	</header>
 
 	{@render children()}
+
+	<footer class="status-strip">
+		<span>Prahlad's Workshop</span>
+		<span>static / cms-ready / off-white mode</span>
+		<button
+			type="button"
+			class:enabled={soundEnabled}
+			aria-pressed={soundEnabled}
+			onclick={() => (soundEnabled = !soundEnabled)}
+		>
+			Sound {soundEnabled ? 'on' : 'off'}
+		</button>
+	</footer>
 </div>
