@@ -1,7 +1,5 @@
 :root {
-	font-family:
-		"Trebuchet MS", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-		sans-serif;
+	font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 	color: #201b14;
 	background: #f6f0e2;
 	--paper: #fff9ea;
@@ -67,7 +65,7 @@ a {
 	background:
 		linear-gradient(45deg, transparent 0 48%, rgba(255, 255, 255, 0.22) 48% 52%, transparent 52%),
 		var(--brass);
-	font-family: Georgia, serif;
+	font-family: ui-serif, Georgia, "Times New Roman", serif;
 	font-weight: 900;
 	box-shadow: var(--shadow);
 	image-rendering: pixelated;
@@ -79,7 +77,7 @@ a {
 }
 
 .brand strong {
-	font-family: Georgia, serif;
+	font-family: ui-serif, Georgia, "Times New Roman", serif;
 	font-size: 1.15rem;
 }
 
@@ -100,7 +98,9 @@ nav a,
 .back-link,
 .social-buttons a,
 .hero-actions a,
-.status-strip button {
+.status-strip button,
+.status-strip a,
+.card-links a {
 	position: relative;
 	border: 2px solid var(--line);
 	background: linear-gradient(#fffdf4, #dacfb8);
@@ -121,7 +121,9 @@ nav a:hover,
 .back-link:hover,
 .social-buttons a:hover,
 .hero-actions a:hover,
-.status-strip button:hover {
+.status-strip button:hover,
+.status-strip a:hover,
+.card-links a:hover {
 	filter: saturate(1.18);
 	transform: translate(1px, 1px);
 	box-shadow: 2px 2px 0 var(--line);
@@ -133,6 +135,8 @@ nav a:active,
 .social-buttons a:active,
 .hero-actions a:active,
 .status-strip button:active,
+.status-strip a:active,
+.card-links a:active,
 .feature-card:active,
 .collection-item:active,
 .note-card:active,
@@ -212,7 +216,7 @@ main {
 h1,
 h2,
 h3 {
-	font-family: Georgia, "Times New Roman", serif;
+	font-family: ui-serif, Georgia, "Times New Roman", serif;
 	letter-spacing: 0;
 }
 
@@ -270,7 +274,7 @@ time {
 }
 
 .gauge strong {
-	font-family: Georgia, serif;
+	font-family: ui-serif, Georgia, "Times New Roman", serif;
 	font-size: 1.3rem;
 }
 
@@ -352,7 +356,7 @@ time {
 
 .section-heading p {
 	margin: 0;
-	font-family: Georgia, serif;
+	font-family: ui-serif, Georgia, "Times New Roman", serif;
 	font-size: 1.6rem;
 	font-weight: 900;
 }
@@ -462,7 +466,7 @@ time {
 }
 
 .business-card > strong {
-	font-family: Georgia, serif;
+	font-family: ui-serif, Georgia, "Times New Roman", serif;
 	font-size: 1.55rem;
 	line-height: 1;
 }
@@ -509,6 +513,39 @@ time {
 
 .social-buttons a {
 	text-align: center;
+}
+
+.dabble-list {
+	display: grid;
+	gap: 12px;
+}
+
+.dabble-list a {
+	position: relative;
+	display: grid;
+	gap: 4px;
+	border-top: 2px dashed var(--line);
+	padding: 13px 0 0 18px;
+}
+
+.dabble-list a > span {
+	position: absolute;
+	top: 16px;
+	left: 0;
+	width: 9px;
+	height: 30px;
+	border: 1px solid var(--line);
+	background: var(--accent);
+}
+
+.dabble-list strong {
+	font-family: ui-serif, Georgia, "Times New Roman", serif;
+	font-size: 1.08rem;
+}
+
+.dabble-list small {
+	color: var(--muted);
+	line-height: 1.35;
 }
 
 .workbench-bays {
@@ -730,9 +767,61 @@ time {
 	image-rendering: pixelated;
 }
 
+.footer-card-wrap {
+	display: grid;
+	place-items: center;
+	margin: 58px 0 24px;
+}
+
+.footer-business-card {
+	width: min(620px, 100%);
+	border: 1px solid rgba(36, 29, 21, 0.55);
+	background:
+		linear-gradient(90deg, rgba(36, 29, 21, 0.025) 1px, transparent 1px),
+		linear-gradient(#fffdf4, #f0eadb);
+	background-size: 7px 7px, auto;
+	padding: clamp(26px, 5vw, 44px);
+	box-shadow:
+		0 18px 40px rgba(36, 29, 21, 0.14),
+		0 0 0 8px rgba(255, 249, 234, 0.55);
+	text-align: center;
+}
+
+.card-kicker {
+	margin: 0;
+	color: var(--muted);
+	font-size: 0.74rem;
+	font-weight: 900;
+	text-transform: uppercase;
+}
+
+.footer-business-card h2 {
+	margin: 10px 0 8px;
+	font-family: ui-serif, Georgia, "Times New Roman", serif;
+	font-size: clamp(2rem, 5vw, 3.6rem);
+	line-height: 0.95;
+}
+
+.card-quote {
+	margin: 0 auto 24px;
+	max-width: 440px;
+	color: #4c4438;
+	font-family: ui-serif, Georgia, "Times New Roman", serif;
+	font-size: 1.05rem;
+	font-style: italic;
+	line-height: 1.45;
+}
+
+.card-links {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 10px;
+}
+
 .status-strip {
 	display: grid;
-	grid-template-columns: auto minmax(0, 1fr) auto;
+	grid-template-columns: auto minmax(0, 1fr) auto auto;
 	gap: 12px;
 	align-items: center;
 	margin: 0 0 24px;
@@ -752,7 +841,8 @@ time {
 	white-space: nowrap;
 }
 
-.status-strip button {
+.status-strip button,
+.status-strip a {
 	cursor: pointer;
 	color: var(--ink);
 	font-family: inherit;

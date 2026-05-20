@@ -39,15 +39,28 @@
 			<a href="/blog">Blog</a>
 			<a href="/art">Art</a>
 			<a href="/shenanigans">Shenanigans</a>
-			<a href="/admin/">CMS</a>
 		</nav>
 	</header>
 
 	{@render children()}
 
+	<section class="footer-card-wrap" aria-label="Contact card">
+		<div class="footer-business-card">
+			<p class="card-kicker">Prahlad Srinivasan</p>
+			<h2>Prahlad's Workshop</h2>
+			<p class="card-quote">"oh, the subtle off white colouring of it"</p>
+			<div class="card-links">
+				<a href="https://www.instagram.com/">Instagram</a>
+				<a href="https://www.linkedin.com/">LinkedIn</a>
+				<a href="mailto:prahlad@example.com">Email</a>
+			</div>
+		</div>
+	</section>
+
 	<footer class="status-strip">
 		<span>Prahlad's Workshop</span>
-		<span>static / cms-ready / off-white mode</span>
+		<span>static system fonts / cms-ready / off-white mode</span>
+		<a href="/admin/">CMS</a>
 		<button
 			type="button"
 			class:enabled={soundEnabled}

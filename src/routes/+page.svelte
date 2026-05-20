@@ -74,21 +74,17 @@
 
 		<aside class="side-column workshop-panel">
 			<div class="section-heading compact">
-				<p>Business card</p>
-				<a href="mailto:prahlad@example.com">Email</a>
+				<p>Current dabbles</p>
+				<a href="/art">Art</a>
 			</div>
-			<div class="business-card">
-				<div class="pixel-avatar" aria-hidden="true">
-					<span></span><span></span><span></span><span></span>
-				</div>
-				<strong>Prahlad Srinivasan</strong>
-				<p>Builder, writer, listener, film-maker in progress.</p>
-				<div class="social-buttons">
-					<a href="https://github.com/prahladsrini">GitHub</a>
-					<a href="https://x.com/">X / Twitter</a>
-					<a href="https://www.linkedin.com/">LinkedIn</a>
-					<a href="mailto:prahlad@example.com">Email</a>
-				</div>
+			<div class="dabble-list">
+				{#each data.interests.slice(0, 5) as interest}
+					<a href="/art">
+						<span style={`--accent:${interest.accent ?? '#c69a2d'}`}></span>
+						<strong>{interest.title}</strong>
+						<small>{interest.summary}</small>
+					</a>
+				{/each}
 			</div>
 		</aside>
 	</section>
