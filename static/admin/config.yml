@@ -1,0 +1,57 @@
+backend:
+  name: github
+  repo: prahladsrini/prahlads-workshop
+  branch: main
+
+local_backend: true
+
+media_folder: "static/uploads"
+public_folder: "/uploads"
+
+site_url: "https://prahlads-workshop.example.com"
+display_url: "https://prahlads-workshop.example.com"
+logo_url: "/favicon.svg"
+
+collections:
+  - name: "work"
+    label: "Work"
+    folder: "src/content/work"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "Summary", name: "summary", widget: "text" }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - { label: "Status", name: "status", widget: "string", required: false }
+      - { label: "Accent Color", name: "accent", widget: "color", required: false }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "notes"
+    label: "Notes"
+    folder: "src/content/notes"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "Summary", name: "summary", widget: "text" }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - { label: "Accent Color", name: "accent", widget: "color", required: false }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "writing"
+    label: "Writing"
+    folder: "src/content/writing"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "Summary", name: "summary", widget: "text" }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - { label: "Accent Color", name: "accent", widget: "color", required: false }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false }
+      - { label: "Body", name: "body", widget: "markdown" }
