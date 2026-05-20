@@ -1,16 +1,27 @@
 <script lang="ts">
+	import { playClickSound } from '$lib/sounds';
 	import '../styles.css';
 
 	let { children } = $props();
+
+	function handlePointerUp(event: PointerEvent) {
+		const target = event.target;
+		if (!(target instanceof Element)) return;
+		if (target.closest('a, button, .sound-tile')) {
+			playClickSound();
+		}
+	}
 </script>
 
 <svelte:head>
 	<title>Prahlad's Workshop</title>
 	<meta
 		name="description"
-		content="Prahlad's Workshop is a static Svelte site for notes, projects, experiments, and field logs."
+		content="Prahlad's Workshop is a static Svelte site for projects, blog posts, art, links, and current interests."
 	/>
 </svelte:head>
+
+<svelte:body onpointerup={handlePointerUp} />
 
 <div class="site-shell">
 	<header class="site-header">
@@ -18,14 +29,14 @@
 			<span class="brand-mark" aria-hidden="true">PW</span>
 			<span>
 				<strong>Prahlad's Workshop</strong>
-				<small>notes, builds, field logs</small>
+				<small>projects, art, blog, curiosities</small>
 			</span>
 		</a>
 
 		<nav aria-label="Primary navigation">
-			<a href="/work">Work</a>
-			<a href="/notes">Notes</a>
-			<a href="/writing">Writing</a>
+			<a href="/projects">Projects</a>
+			<a href="/blog">Blog</a>
+			<a href="/art">Art</a>
 			<a href="/admin/">CMS</a>
 		</nav>
 	</header>

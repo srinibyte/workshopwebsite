@@ -13,9 +13,9 @@ display_url: "https://prahlads-workshop.example.com"
 logo_url: "/favicon.svg"
 
 collections:
-  - name: "work"
-    label: "Work"
-    folder: "src/content/work"
+  - name: "projects"
+    label: "Projects"
+    folder: "src/content/projects"
     create: true
     slug: "{{slug}}"
     fields:
@@ -28,9 +28,9 @@ collections:
       - { label: "Featured", name: "featured", widget: "boolean", default: false }
       - { label: "Body", name: "body", widget: "markdown" }
 
-  - name: "notes"
-    label: "Notes"
-    folder: "src/content/notes"
+  - name: "blog"
+    label: "Blog"
+    folder: "src/content/blog"
     create: true
     slug: "{{slug}}"
     fields:
@@ -42,9 +42,38 @@ collections:
       - { label: "Featured", name: "featured", widget: "boolean", default: false }
       - { label: "Body", name: "body", widget: "markdown" }
 
-  - name: "writing"
-    label: "Writing"
-    folder: "src/content/writing"
+  - name: "art"
+    label: "Art"
+    folder: "src/content/art"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "Kind", name: "kind", widget: "select", options: ["music", "film", "visual", "writing", "other"], default: "music" }
+      - { label: "Summary", name: "summary", widget: "text" }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - { label: "Accent Color", name: "accent", widget: "color", required: false }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false }
+      - { label: "External URL", name: "url", widget: "string", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "interests"
+    label: "Current Interests"
+    folder: "src/content/interests"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Ticker Text", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+      - { label: "Short Note", name: "summary", widget: "text", required: false }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - { label: "Accent Color", name: "accent", widget: "color", required: false }
+      - { label: "Body", name: "body", widget: "markdown", required: false }
+
+  - name: "notes"
+    label: "Notes"
+    folder: "src/content/notes"
     create: true
     slug: "{{slug}}"
     fields:

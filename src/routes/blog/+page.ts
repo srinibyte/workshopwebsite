@@ -2,6 +2,6 @@ import { getCollection } from '$lib/content';
 
 export function load() {
 	return {
-		items: getCollection('work')
+		items: getCollection('blog')
 	};
 }

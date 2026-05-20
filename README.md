@@ -23,9 +23,11 @@ Open `http://127.0.0.1:5173/`.
 
 Content is stored as Markdown:
 
-- Work: `src/content/work`
+- Projects: `src/content/projects`
+- Blog: `src/content/blog`
+- Art: `src/content/art`
+- Interests ticker: `src/content/interests`
 - Notes: `src/content/notes`
-- Writing: `src/content/writing`
 
 Each file has frontmatter fields:
 

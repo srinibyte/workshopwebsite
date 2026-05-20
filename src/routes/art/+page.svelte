@@ -5,19 +5,19 @@
 </script>
 
 <svelte:head>
-	<title>Writing / Prahlad's Workshop</title>
+	<title>Art / Prahlad's Workshop</title>
 </svelte:head>
 
 <main class="collection-page">
 	<section class="collection-hero">
-		<p class="eyebrow">Writing</p>
-		<h1>Longer notes from the workbench.</h1>
+		<p class="eyebrow">Art</p>
+		<h1>Music, films, sketches, and things worth saving.</h1>
 	</section>
 
-	<div class="collection-list">
+	<div class="note-grid art-grid">
 		{#each data.items as item}
-			<a class="collection-item" href={`/writing/${item.slug}`}>
-				<span style={`--accent:${item.accent ?? '#c19a32'}`}></span>
+			<a class="note-card art-card" href={`/art/${item.slug}`}>
+				<span>{item.kind ?? 'entry'}</span>
 				<time>{formatDate(item.date)}</time>
 				<h2>{item.title}</h2>
 				<p>{item.summary}</p>

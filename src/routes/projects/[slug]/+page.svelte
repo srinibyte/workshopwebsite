@@ -9,9 +9,9 @@
 </svelte:head>
 
 <article class="article-page">
-	<a class="back-link" href="/writing">Back to writing</a>
+	<a class="back-link" href="/projects">Back to projects</a>
 	<header>
-		<p class="eyebrow">Writing / {formatDate(data.item.date)}</p>
+		<p class="eyebrow">Project / {formatDate(data.item.date)}</p>
 		<h1>{data.item.title}</h1>
 		<p>{data.item.summary}</p>
 	</header>
