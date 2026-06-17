@@ -1,70 +1,140 @@
-# Prahlad's Workshop
+# Prahlad's Website
 
-Static SvelteKit site with Git-backed Markdown content and a Decap CMS editor.
+Astro site for:
+- `Homepage`
+- `Blog`
+- `Notes`
+- `Gallery`
+- `Projects`
+- `Contact`
 
-## Stack
+Hosted on Netlify.
 
-- SvelteKit
-- `@sveltejs/adapter-static`
-- Markdown files in `src/content`
-- Decap CMS at `/admin`
-- Uploaded media in `static/uploads`
+## Local development
 
-## Local Development
-
-```sh
+```bash
 npm install
 npm run dev
 ```
 
-Open `http://127.0.0.1:5173/`.
+Build and validate:
 
-## Editing Content
+```bash
+npm run check
+npm run build
+```
 
-Content is stored as Markdown:
+## Content workflow
 
-- Projects: `src/content/projects`
-- Blog: `src/content/blog`
-- Art: `src/content/art`
-- Shenanigans: `src/content/shenanigans`
-- Interests ticker: `src/content/interests`
-- Notes: `src/content/notes`
+You can maintain this without Codex.
 
-Each file has frontmatter fields:
+### Blog posts
+
+Add markdown files to:
+
+`src/content/blog/`
+
+Frontmatter shape:
 
 ```md
 ---
 title: "Post title"
-date: "2026-05-20"
-summary: "Short description shown in lists."
-tags: ["svelte", "cms"]
-accent: "#d6632d"
-featured: true
+description: "Short description"
+date: "2026-05-27"
+tags: ["tag-one", "tag-two"]
 ---
-
-Markdown body goes here.
 ```
 
-You can also edit content through `/admin` after GitHub CMS authentication is configured.
+### Notes
 
-## CMS Setup
+Add markdown files to:
 
-Update `static/admin/config.yml` before deploying:
+`src/content/notes/`
 
-- `repo`: your GitHub repo, for example `prahladsrini/prahlads-workshop`
-- `branch`: usually `main`
-- `site_url` and `display_url`: your deployed site URL
+Frontmatter shape:
 
-Decap CMS needs GitHub authentication in production. The usual static-site options are:
-
-- Netlify Identity + Git Gateway if deploying on Netlify.
-- A GitHub OAuth app / backend if deploying elsewhere.
-- Local CMS editing during development with Decap's local backend.
-
-## Build
-
-```sh
-npm run build
+```md
+---
+title: "Note title"
+summary: "Short summary"
+date: "2026-05-27"
+tags: ["tag-one", "tag-two"]
+externalUrl: "https://example.com"
+images:
+  - src: "/uploads/your-image.jpg"
+    alt: "Describe the image"
+    caption: "Optional caption"
+---
 ```
 
-The static site is written to `build`.
+Write the note body below the frontmatter. Notes render directly into the feed on `/notes`.
+
+### Gallery uploads
+
+Put image files in:
+
+`public/uploads/`
+
+If an image belongs to a note, add it to that note's `images:` frontmatter. It will appear in:
+- the note feed
+- the gallery page
+
+If you want a standalone gallery image, add a markdown file to:
+
+`src/content/gallery/`
+
+Example:
+
+```md
+---
+title: "Gallery item"
+date: "2026-05-27"
+image: "/uploads/example.jpg"
+alt: "Describe the image"
+---
+```
+
+## Obsidian workflow
+
+Recommended approach:
+1. Write blog posts and notes in Obsidian as markdown.
+2. Copy the finished markdown file into the matching content folder.
+3. Copy any images into `public/uploads/`.
+4. Run `npm run check`.
+5. Run `npm run build`.
+6. Commit and push to GitHub.
+
+## Netlify
+
+This repo is already configured for:
+- build command: `npm run build`
+- publish directory: `dist`
+
+## Admin workflow
+
+An in-site editor is configured at:
+
+`/admin`
+
+What it edits:
+- `Blog`
+- `Notes`
+- `Projects`
+- uploaded media in `public/uploads/`
+
+Local use:
+1. Run `npm run dev`
+2. Run `npm run admin:proxy`
+3. Open `http://127.0.0.1:4321/admin`
+4. Decap can edit content directly in the repo through the local proxy
+
+Deployment use:
+1. Deploy to Netlify
+2. Enable `Identity`
+3. Enable `Git Gateway`
+4. Invite your admin user
+5. Open `/admin` on the live site and log in
+
+Note:
+- `local_backend: true` is enabled in `public/admin/config.yml` for local editing
+- production editing expects Netlify Identity + Git Gateway

@@ -1,0 +1,223 @@
+---
+type Props = {
+	title?: string;
+	description?: string;
+	bodyClass?: string;
+};
+
+const {
+	title = "Prahlad Srinivasan",
+	description = "Prahlad Srinivasan's personal website.",
+	bodyClass = ''
+} = Astro.props as Props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content={description} />
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<title>{title}</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Spectral:wght@400;500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+		<link rel="stylesheet" href="/styles/global.css" />
+		<script is:inline>
+			(() => {
+				const storedTheme = window.localStorage.getItem('theme');
+				const theme =
+					storedTheme === 'dark'
+						? 'dark'
+						: 'light';
+				document.documentElement.dataset.theme = theme;
+			})();
+		</script>
+	</head>
+	<body class={bodyClass}>
+		<div class="site-shell">
+			<header class="site-header">
+				<div class="header-actions">
+					<nav class="site-nav" aria-label="Primary">
+						<a class="home-link" href="/" data-clicky>Home</a>
+						<a href="/blog" data-clicky>Blog</a>
+						<a href="/notes" data-clicky>Notes</a>
+						<a href="/gallery" data-clicky>Gallery</a>
+						<a href="/projects" data-clicky>Projects</a>
+						<a href="/contact" data-clicky>Contact</a>
+					</nav>
+					<button
+						class="theme-toggle"
+						type="button"
+						data-theme-toggle
+						aria-label="Switch to dark mode"
+						data-clicky
+					>
+						<span class="theme-toggle-sun" aria-hidden="true"></span>
+						<span class="theme-toggle-moon" aria-hidden="true"></span>
+						<span class="sr-only" data-theme-label>Light mode</span>
+					</button>
+				</div>
+			</header>
+
+			<slot />
+
+			{bodyClass.includes('home-body') ? (
+				<div class="home-signature" aria-hidden="true">Prahlad Srinivasan</div>
+			) : null}
+		</div>
+
+		<script is:inline>
+			(() => {
+				let audioContext;
+
+				const clickTone = () => {
+					audioContext ??= new window.AudioContext();
+					if (audioContext.state === 'suspended') audioContext.resume();
+
+					const now = audioContext.currentTime;
+					const osc = audioContext.createOscillator();
+					const gain = audioContext.createGain();
+					const filter = audioContext.createBiquadFilter();
+
+					osc.type = 'square';
+					osc.frequency.setValueAtTime(820, now);
+					osc.frequency.exponentialRampToValueAtTime(500, now + 0.025);
+
+					filter.type = 'lowpass';
+					filter.frequency.value = 2200;
+
+					gain.gain.setValueAtTime(0.0001, now);
+					gain.gain.exponentialRampToValueAtTime(0.045, now + 0.002);
+					gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
+
+					osc.connect(filter);
+					filter.connect(gain);
+					gain.connect(audioContext.destination);
+
+					osc.start(now);
+					osc.stop(now + 0.05);
+				};
+
+				document.addEventListener('pointerup', (event) => {
+					const target = event.target;
+					if (!(target instanceof Element)) return;
+					if (!target.closest('a, button, [data-clicky]')) return;
+					clickTone();
+				});
+
+				const filterGroups = [...document.querySelectorAll('[data-filter-group]')];
+				for (const group of filterGroups) {
+					const buttons = [...group.querySelectorAll('[data-filter-value]')];
+					const targetName = group.getAttribute('data-filter-group');
+					if (!targetName) continue;
+					const searchInput = document.querySelector(`[data-search-group="${targetName}"]`);
+
+					const items = [
+						...document.querySelectorAll(`[data-filter-target="${targetName}"]`)
+					];
+
+					const update = (value, query) => {
+						for (const button of buttons) {
+							button.classList.toggle(
+								'is-active',
+								button.getAttribute('data-filter-value') === value
+							);
+						}
+
+						for (const item of items) {
+							const tags = item.getAttribute('data-tags') || '';
+							const searchText = (item.getAttribute('data-search-text') || '').toLowerCase();
+							const matchesTag = value === 'all' || tags.split(',').includes(value);
+							const matchesQuery = !query || searchText.includes(query);
+							item.hidden = !(matchesTag && matchesQuery);
+						}
+					};
+
+					const currentValue = () =>
+						buttons.find((button) => button.classList.contains('is-active'))?.getAttribute('data-filter-value') ||
+						'all';
+
+					const currentQuery = () =>
+						searchInput instanceof HTMLInputElement
+							? searchInput.value.trim().toLowerCase()
+							: '';
+
+					for (const button of buttons) {
+						button.addEventListener('click', () => {
+							update(button.getAttribute('data-filter-value') || 'all', currentQuery());
+						});
+					}
+
+					if (searchInput instanceof HTMLInputElement) {
+						searchInput.addEventListener('input', () => {
+							update(currentValue(), currentQuery());
+						});
+					}
+
+					update('all', currentQuery());
+				}
+
+				const followLabels = [...document.querySelectorAll('[data-follow-label]')];
+				for (const hotspot of followLabels) {
+					if (!(hotspot instanceof HTMLElement)) continue;
+
+					const updateTooltipPosition = (clientX, clientY) => {
+						const rect = hotspot.getBoundingClientRect();
+						const x = Math.max(12, Math.min(clientX - rect.left, rect.width - 12));
+						const y = Math.max(12, Math.min(clientY - rect.top, rect.height - 12));
+						hotspot.style.setProperty('--tooltip-x', `${x}px`);
+						hotspot.style.setProperty('--tooltip-y', `${y}px`);
+					};
+
+					hotspot.addEventListener('pointermove', (event) => {
+						updateTooltipPosition(event.clientX, event.clientY);
+					});
+
+					hotspot.addEventListener('pointerenter', (event) => {
+						updateTooltipPosition(event.clientX, event.clientY);
+					});
+
+					hotspot.addEventListener('focus', () => {
+						hotspot.style.setProperty('--tooltip-x', '50%');
+						hotspot.style.setProperty('--tooltip-y', '50%');
+					});
+				}
+
+				const themeToggle = document.querySelector('[data-theme-toggle]');
+				const themeLabel = document.querySelector('[data-theme-label]');
+
+				const applyTheme = (theme) => {
+					document.documentElement.dataset.theme = theme;
+					window.localStorage.setItem('theme', theme);
+					if (themeLabel instanceof HTMLElement) {
+						themeLabel.textContent = theme === 'dark' ? 'Dark mode' : 'Light mode';
+					}
+					if (themeToggle instanceof HTMLButtonElement) {
+						themeToggle.setAttribute(
+							'aria-label',
+							theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
+						);
+					}
+				};
+
+				const initialTheme = document.documentElement.dataset.theme === 'dark'
+					? 'dark'
+					: 'light';
+				applyTheme(initialTheme);
+
+				if (themeToggle instanceof HTMLButtonElement) {
+					themeToggle.addEventListener('click', () => {
+						const currentTheme = document.documentElement.dataset.theme || 'light';
+						const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+						applyTheme(nextTheme);
+					});
+				}
+			})();
+		</script>
+	</body>
+</html>

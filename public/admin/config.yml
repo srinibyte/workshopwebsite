@@ -1,0 +1,68 @@
+local_backend: true
+
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+site_url: "http://127.0.0.1:4321"
+display_url: "http://127.0.0.1:4321"
+logo_url: "/favicon.svg"
+
+slug:
+  encoding: "ascii"
+  clean_accents: true
+
+collections:
+  - name: "blog"
+    label: "Blog"
+    folder: "src/content/blog"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Description", name: "description", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", time_format: false }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "notes"
+    label: "Notes"
+    folder: "src/content/notes"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Summary", name: "summary", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", time_format: false }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - { label: "External URL", name: "externalUrl", widget: "string", required: false }
+      - label: "Images"
+        name: "images"
+        widget: "list"
+        required: false
+        fields:
+          - { label: "Image", name: "src", widget: "image" }
+          - { label: "Alt", name: "alt", widget: "string" }
+          - { label: "Caption", name: "caption", widget: "string", required: false }
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  - name: "projects"
+    label: "Projects"
+    folder: "src/content/projects"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Description", name: "description", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", time_format: false }
+      - label: "Status"
+        name: "status"
+        widget: "select"
+        options: ["idea", "active", "paused", "shipped"]
+        default: "active"
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - { label: "External URL", name: "externalUrl", widget: "string", required: false }
+      - { label: "Body", name: "body", widget: "markdown", required: false }

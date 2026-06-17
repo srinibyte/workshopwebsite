@@ -1,0 +1,83 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatDate, slugToId } from '../../lib/content';
+
+const notes: CollectionEntry<'notes'>[] = (await getCollection('notes')).sort(
+	(a: CollectionEntry<'notes'>, b: CollectionEntry<'notes'>) =>
+		b.data.date.valueOf() - a.data.date.valueOf()
+);
+const tags = [...new Set(notes.flatMap((note: CollectionEntry<'notes'>) => note.data.tags))];
+const rendered = await Promise.all(
+	notes.map(async (note: CollectionEntry<'notes'>) => ({
+		note,
+		...(await render(note))
+	}))
+);
+---
+
+<BaseLayout title="Notes - Prahlad Srinivasan" description="Notes feed by Prahlad Srinivasan.">
+	<main class="content-page">
+		<header class="page-top">
+			<div>
+				<h1>Notes</h1>
+				<p>Photos, links, and small writeups in a chronological feed.</p>
+			</div>
+		</header>
+
+		{tags.length ? (
+			<div class="tag-filter" data-filter-group="notes">
+				<button class="tag-pill is-active" data-filter-value="all" type="button">All</button>
+				{tags.map((tag) => (
+					<button class="tag-pill" data-filter-value={tag} type="button">{tag}</button>
+				))}
+			</div>
+		) : null}
+
+		<section class="notes-feed">
+			{rendered.map(({ note, Content }) => (
+				<article
+					id={slugToId(note.id)}
+					class="note-card"
+					data-filter-target="notes"
+					data-tags={note.data.tags.join(',')}
+				>
+					<header class="note-head">
+						<div>
+							<time>{formatDate(note.data.date)}</time>
+							<h2>{note.data.title}</h2>
+						</div>
+						<div class="tag-row">
+							{note.data.tags.map((tag: string) => <span>{tag}</span>)}
+						</div>
+					</header>
+
+					<p class="note-summary">{note.data.summary}</p>
+
+					{note.data.images.length ? (
+						<div class="note-images">
+							{note.data.images.map((image: { src: string; alt: string; caption?: string }) => (
+								<figure>
+									<img src={image.src} alt={image.alt} loading="lazy" />
+									{image.caption ? <figcaption>{image.caption}</figcaption> : null}
+								</figure>
+							))}
+						</div>
+					) : null}
+
+					<div class="prose note-prose">
+						<Content />
+					</div>
+
+					{note.data.externalUrl ? (
+						<p class="note-link">
+							<a href={note.data.externalUrl} target="_blank" rel="noreferrer" data-clicky>
+								Open link
+							</a>
+						</p>
+					) : null}
+				</article>
+			))}
+		</section>
+	</main>
+</BaseLayout>

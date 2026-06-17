@@ -1,0 +1,67 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatDate } from '../../lib/content';
+
+const posts: CollectionEntry<'blog'>[] = (await getCollection('blog')).sort(
+	(a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) =>
+		b.data.date.valueOf() - a.data.date.valueOf()
+);
+const tags = [...new Set(posts.flatMap((post: CollectionEntry<'blog'>) => post.data.tags))];
+---
+
+<BaseLayout title="Blog - Prahlad Srinivasan" description="Blog posts by Prahlad Srinivasan.">
+	<main class="content-page">
+		<header class="page-top blog-top">
+			<div>
+				<p class="back-row">
+					<a class="back-link" href="/" data-clicky>Back Home</a>
+				</p>
+				<h1>Blog</h1>
+				<p>Simple posts, sorted by date.</p>
+			</div>
+		</header>
+
+		<div class="search-strip">
+			<label class="search-label" for="blog-search">Search</label>
+			<input
+				id="blog-search"
+				class="search-input"
+				type="search"
+				name="q"
+				placeholder="Search by title, description, or tag"
+				autocomplete="off"
+				data-search-group="blog"
+			/>
+		</div>
+
+		{tags.length ? (
+			<div class="tag-filter" data-filter-group="blog">
+				<button class="tag-pill is-active" data-filter-value="all" type="button">All</button>
+				{tags.map((tag) => (
+					<button class="tag-pill" data-filter-value={tag} type="button">{tag}</button>
+				))}
+			</div>
+		) : null}
+
+		<div class="blog-listing">
+			{posts.map((post: CollectionEntry<'blog'>) => (
+				<a
+					class="list-card"
+					href={`/blog/${post.id}`}
+					data-clicky
+					data-filter-target="blog"
+					data-tags={post.data.tags.join(',')}
+					data-search-text={[post.data.title, post.data.description, ...post.data.tags].join(' ').toLowerCase()}
+				>
+					<time>{formatDate(post.data.date)}</time>
+					<h2>{post.data.title}</h2>
+					<p>{post.data.description}</p>
+					<div class="tag-row">
+						{post.data.tags.map((tag: string) => <span>{tag}</span>)}
+					</div>
+				</a>
+			))}
+		</div>
+	</main>
+</BaseLayout>

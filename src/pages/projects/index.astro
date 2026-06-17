@@ -1,0 +1,55 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatDate } from '../../lib/content';
+
+const projects: CollectionEntry<'projects'>[] = (await getCollection('projects')).sort(
+	(a: CollectionEntry<'projects'>, b: CollectionEntry<'projects'>) =>
+		b.data.date.valueOf() - a.data.date.valueOf()
+);
+---
+
+<BaseLayout title="Projects - Prahlad Srinivasan" description="Projects by Prahlad Srinivasan.">
+	<main class="content-page">
+		<header class="page-top">
+			<div>
+				<p class="back-row">
+					<a class="back-link" href="/" data-clicky>Back Home</a>
+				</p>
+				<h1>Projects</h1>
+				<p>Work in progress, experiments, and larger things worth documenting properly.</p>
+			</div>
+		</header>
+
+		<section class="project-list">
+			{projects.length ? (
+				projects.map((project: CollectionEntry<'projects'>) => (
+					<article class="list-card">
+						<time>{formatDate(project.data.date)}</time>
+						<h2>{project.data.title}</h2>
+						<p>{project.data.description}</p>
+						<div class="tag-row">
+							<span>{project.data.status}</span>
+							{project.data.tags.map((tag: string) => <span>{tag}</span>)}
+						</div>
+						{project.data.externalUrl ? (
+							<p class="note-link">
+								<a href={project.data.externalUrl} target="_blank" rel="noreferrer" data-clicky>
+									Open project
+								</a>
+							</p>
+						) : null}
+					</article>
+				))
+			) : (
+				<article class="list-card">
+					<time>Coming soon</time>
+					<h2>Projects index</h2>
+					<p>
+						This page is ready to hold case studies, experiments, and longer-form project writeups.
+					</p>
+				</article>
+			)}
+		</section>
+	</main>
+</BaseLayout>

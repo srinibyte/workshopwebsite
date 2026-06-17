@@ -1,0 +1,85 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { formatDate } from '../lib/content';
+
+const posts: CollectionEntry<'blog'>[] = (await getCollection('blog')).sort(
+	(a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) =>
+		b.data.date.valueOf() - a.data.date.valueOf()
+);
+const notes: CollectionEntry<'notes'>[] = (await getCollection('notes')).sort(
+	(a: CollectionEntry<'notes'>, b: CollectionEntry<'notes'>) =>
+		b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const latestPost = posts[0];
+const latestNote = notes[0];
+---
+
+<BaseLayout title="Prahlad Srinivasan" description="Personal website for blog, notes, gallery, and contact." bodyClass="home-body">
+	<main class="home-screen">
+		<section class="image-home" aria-label="Homepage illustration navigation">
+			<div class="image-stage">
+				<img
+					class="home-illustration"
+					src="/uploads/home-workshop.png"
+					alt="Comic-style workshop scene with Prahlad at a desk pointing toward a sunset window."
+				/>
+
+				<a class="hotspot hotspot-left-whiteboard" href="/projects" data-clicky data-follow-label aria-label="Open Projects from left whiteboard">
+					<span class="sr-only">Projects</span>
+					<span class="hotspot-label" aria-hidden="true">Projects</span>
+				</a>
+
+				<a class="hotspot hotspot-camera-main" href="/gallery" data-clicky data-follow-label aria-label="Open Gallery from main camera">
+					<span class="sr-only">Gallery</span>
+					<span class="hotspot-label" aria-hidden="true">Gallery</span>
+				</a>
+
+				<a class="hotspot hotspot-camera-small" href="/gallery" data-clicky data-follow-label aria-label="Open Gallery from small camera">
+					<span class="sr-only">Gallery</span>
+					<span class="hotspot-label" aria-hidden="true">Gallery</span>
+				</a>
+
+				<a
+					class="hotspot hotspot-notebook"
+					href="/blog"
+					data-clicky
+					data-follow-label
+					aria-label="Open Blog from notebook"
+				>
+					<span class="sr-only">Blog</span>
+					<span class="hotspot-label" aria-hidden="true">Blog</span>
+				</a>
+
+				<a class="hotspot hotspot-monitor" href="/blog" data-clicky data-follow-label aria-label="Open Blog from monitor">
+					<span class="sr-only">Blog</span>
+					<span class="hotspot-label" aria-hidden="true">Blog</span>
+				</a>
+
+				<a class="hotspot hotspot-right-whiteboard" href="/notes" data-clicky data-follow-label aria-label="Open Notes from right whiteboard">
+					<span class="sr-only">Notes</span>
+					<span class="hotspot-label" aria-hidden="true">Notes</span>
+				</a>
+			</div>
+		</section>
+
+		<section class="home-latest" aria-label="Latest updates">
+			{latestPost ? (
+				<a class="latest-button" href={`/blog/${latestPost.id}`} data-clicky>
+					<span>Latest Blog</span>
+					<strong>{latestPost.data.title}</strong>
+					<small>{formatDate(latestPost.data.date)}</small>
+				</a>
+			) : null}
+
+			{latestNote ? (
+				<a class="latest-button" href="/notes" data-clicky>
+					<span>Latest Note</span>
+					<strong>{latestNote.data.title}</strong>
+					<small>{formatDate(latestNote.data.date)}</small>
+				</a>
+			) : null}
+		</section>
+	</main>
+</BaseLayout>

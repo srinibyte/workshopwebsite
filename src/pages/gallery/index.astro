@@ -1,0 +1,62 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { extractMarkdownImages, formatDate, slugToId } from '../../lib/content';
+
+const notes: CollectionEntry<'notes'>[] = (await getCollection('notes')).sort(
+	(a: CollectionEntry<'notes'>, b: CollectionEntry<'notes'>) =>
+		b.data.date.valueOf() - a.data.date.valueOf()
+);
+const posts: CollectionEntry<'blog'>[] = (await getCollection('blog')).sort(
+	(a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) =>
+		b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const noteImages = notes.flatMap((note: CollectionEntry<'notes'>) =>
+	note.data.images.map((image: { src: string; alt: string; caption?: string }) => ({
+		title: note.data.title,
+		date: note.data.date,
+		image: image.src,
+		alt: image.alt,
+		caption: image.caption,
+		href: `/notes#${slugToId(note.id)}`
+	}))
+);
+
+const blogImages = posts.flatMap((post: CollectionEntry<'blog'>) =>
+	extractMarkdownImages(post.body).map((image) => ({
+		title: post.data.title,
+		date: post.data.date,
+		image: image.src,
+		alt: image.alt,
+		href: `/blog/${post.id}`
+	}))
+);
+
+const allImages = [...blogImages, ...noteImages].sort(
+	(a, b) => b.date.valueOf() - a.date.valueOf()
+);
+---
+
+<BaseLayout title="Gallery - Prahlad Srinivasan" description="Photo gallery by Prahlad Srinivasan.">
+	<main class="content-page">
+		<header class="page-top">
+			<div>
+				<h1>Gallery</h1>
+				<p>Images pulled from blog posts and notes, linked back to where they were published.</p>
+			</div>
+		</header>
+
+		<section class="gallery-grid">
+			{allImages.map((item) => (
+				<a class="gallery-card" href={item.href} data-clicky>
+					<img src={item.image} alt={item.alt} loading="lazy" />
+					<div>
+						<strong>{item.title}</strong>
+						<small>{formatDate(item.date)}</small>
+					</div>
+				</a>
+			))}
+		</section>
+	</main>
+</BaseLayout>
