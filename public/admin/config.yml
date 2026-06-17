@@ -7,8 +7,8 @@ backend:
 media_folder: "public/uploads"
 public_folder: "/uploads"
 
-site_url: "http://127.0.0.1:4321"
-display_url: "http://127.0.0.1:4321"
+site_url: "https://prahlad-workshop-site.netlify.app"
+display_url: "https://prahlad-workshop-site.netlify.app"
 logo_url: "/favicon.svg"
 
 slug:
