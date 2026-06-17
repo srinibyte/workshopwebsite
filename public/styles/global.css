@@ -1072,6 +1072,20 @@ input {
 	text-align: right;
 }
 
+.contact-about {
+	margin-top: 10px;
+	padding-top: 18px;
+	border-top: 1px solid color-mix(in srgb, var(--ink) 14%, transparent 86%);
+}
+
+.contact-about p {
+	margin: 0;
+	max-width: 44ch;
+	font-size: 1.02rem;
+	line-height: 1.8;
+	color: color-mix(in srgb, var(--ink) 88%, var(--muted) 12%);
+}
+
 .admin-link {
 	font-size: 0.68rem;
 	font-weight: 600;

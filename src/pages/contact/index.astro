@@ -1,5 +1,9 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const aboutEntry = (await getCollection('about'))[0];
+const aboutWriteup = aboutEntry?.data.writeup;
 ---
 
 <BaseLayout title="About - Prahlad Srinivasan" description="About Prahlad Srinivasan.">
@@ -39,5 +43,11 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 				</p>
 			</div>
 		</section>
+
+		{aboutWriteup ? (
+			<section class="contact-about prose" aria-label="About writeup">
+				<p>{aboutWriteup}</p>
+			</section>
+		) : null}
 	</main>
 </BaseLayout>

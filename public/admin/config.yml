@@ -83,3 +83,12 @@ collections:
       - { label: "External URL", name: "externalUrl", widget: "string", required: false }
       - { label: "Author Note", name: "authorNote", widget: "text", required: false }
       - { label: "Body", name: "body", widget: "markdown", required: false }
+
+  - name: "about"
+    label: "About"
+    files:
+      - label: "About Writeup"
+        name: "about"
+        file: "src/content/about/about.md"
+        fields:
+          - { label: "Writeup", name: "writeup", widget: "text" }
