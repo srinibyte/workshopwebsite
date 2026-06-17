@@ -27,6 +27,7 @@ const {
 			rel="stylesheet"
 		/>
 		<link rel="stylesheet" href="/styles/global.css" />
+		<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 		<script is:inline>
 			(() => {
 				const storedTheme = window.localStorage.getItem('theme');
@@ -216,6 +217,32 @@ const {
 						const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
 						applyTheme(nextTheme);
 					});
+				}
+
+				const identity = window.netlifyIdentity;
+				const authHash = window.location.hash;
+				const hasIdentityToken =
+					authHash.includes('invite_token=') ||
+					authHash.includes('confirmation_token=') ||
+					authHash.includes('recovery_token=') ||
+					authHash.includes('email_change_token=');
+
+				if (identity) {
+					identity.on('init', (user) => {
+						if (hasIdentityToken && !user) {
+							identity.open();
+						}
+					});
+
+					identity.on('login', () => {
+						if (window.location.pathname !== '/admin/') {
+							window.location.href = '/admin/';
+						}
+					});
+
+					if (hasIdentityToken) {
+						window.requestAnimationFrame(() => identity.open());
+					}
 				}
 			})();
 		</script>
