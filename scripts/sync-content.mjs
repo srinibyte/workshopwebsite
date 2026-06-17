@@ -1,26 +1,19 @@
-import { watch } from 'node:fs';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import { fileURLToPath } from 'node:url';
 
 const execFileAsync = promisify(execFile);
-const root = fileURLToPath(new URL('..', import.meta.url));
+const root = new URL('..', import.meta.url).pathname;
 const watchedPaths = ['src/content', 'public/uploads'];
 
-let debounceTimer;
 let running = false;
-let pending = false;
+let lastSignature = '';
 
 const commitMessage = () => `Sync content ${new Date().toISOString().slice(0, 19).replace('T', ' ')}`;
 
 const runSync = async () => {
-	if (running) {
-		pending = true;
-		return;
-	}
+	if (running) return;
 
 	running = true;
-	pending = false;
 
 	try {
 		const { stdout } = await execFileAsync(
@@ -29,10 +22,12 @@ const runSync = async () => {
 			{ cwd: root }
 		);
 
-		if (!stdout.trim()) {
+		const signature = stdout.trim();
+		if (!signature || signature === lastSignature) {
 			return;
 		}
 
+		lastSignature = signature;
 		await execFileAsync('git', ['add', ...watchedPaths], { cwd: root });
 
 		try {
@@ -51,19 +46,10 @@ const runSync = async () => {
 		console.error('[sync] failed:', error?.stderr || error?.message || error);
 	} finally {
 		running = false;
-		if (pending) {
-			runSync();
-		}
 	}
 };
 
-const scheduleSync = () => {
-	clearTimeout(debounceTimer);
-	debounceTimer = setTimeout(runSync, 1200);
-};
-
-for (const relativePath of watchedPaths) {
-	watch(new URL(`../${relativePath}`, import.meta.url), { recursive: true }, scheduleSync);
-}
-
-console.log('[sync] watching content and uploads for auto-push');
+console.log('[sync] polling content and uploads for auto-push');
+setInterval(() => {
+	void runSync();
+}, 2500);
