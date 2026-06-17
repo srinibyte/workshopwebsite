@@ -4,7 +4,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { formatDate } from '../../lib/content';
 
 export async function getStaticPaths() {
-	const posts: CollectionEntry<'blog'>[] = await getCollection('blog');
+	const posts: CollectionEntry<'blog'>[] = (await getCollection('blog')).filter(
+		(post: CollectionEntry<'blog'>) => !post.data.draft
+	);
 	return posts.map((post) => ({
 		params: { slug: post.id },
 		props: { post }
@@ -20,7 +22,6 @@ const { Content } = await render(post);
 		<header class="post-header">
 			<p class="back-row">
 				<a class="back-link" href="/blog" data-clicky>Back to Blog</a>
-				<a class="back-link" href="/" data-clicky>Home</a>
 			</p>
 			<time>{formatDate(post.data.date)}</time>
 			<h1>{post.data.title}</h1>
@@ -30,8 +31,25 @@ const { Content } = await render(post);
 			</div>
 		</header>
 
+		{post.data.coverImage ? (
+			<figure class="post-cover">
+				<img
+					src={post.data.coverImage}
+					alt={post.data.coverImageAlt || post.data.title}
+					loading="eager"
+				/>
+			</figure>
+		) : null}
+
 		<article class="prose">
 			<Content />
 		</article>
+
+		{post.data.authorNote ? (
+			<section class="author-note">
+				<p class="author-note-label">Author's note</p>
+				<p>{post.data.authorNote}</p>
+			</section>
+		) : null}
 	</main>
 </BaseLayout>

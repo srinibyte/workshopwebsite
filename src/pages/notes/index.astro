@@ -3,7 +3,9 @@ import { getCollection, render, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { formatDate, slugToId } from '../../lib/content';
 
-const notes: CollectionEntry<'notes'>[] = (await getCollection('notes')).sort(
+const notes: CollectionEntry<'notes'>[] = (await getCollection('notes'))
+	.filter((note: CollectionEntry<'notes'>) => !note.data.draft)
+	.sort(
 	(a: CollectionEntry<'notes'>, b: CollectionEntry<'notes'>) =>
 		b.data.date.valueOf() - a.data.date.valueOf()
 );
@@ -54,6 +56,16 @@ const rendered = await Promise.all(
 
 					<p class="note-summary">{note.data.summary}</p>
 
+					{note.data.coverImage ? (
+						<figure class="note-cover">
+							<img
+								src={note.data.coverImage}
+								alt={note.data.coverImageAlt || note.data.title}
+								loading="lazy"
+							/>
+						</figure>
+					) : null}
+
 					{note.data.images.length ? (
 						<div class="note-images">
 							{note.data.images.map((image: { src: string; alt: string; caption?: string }) => (
@@ -68,6 +80,13 @@ const rendered = await Promise.all(
 					<div class="prose note-prose">
 						<Content />
 					</div>
+
+					{note.data.authorNote ? (
+						<section class="author-note note-author-note">
+							<p class="author-note-label">Author's note</p>
+							<p>{note.data.authorNote}</p>
+						</section>
+					) : null}
 
 					{note.data.externalUrl ? (
 						<p class="note-link">

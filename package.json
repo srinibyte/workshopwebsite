@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "astro dev",
+		"dev:local": "astro dev --host localhost --port 4321",
 		"build": "astro build",
 		"preview": "astro preview",
 		"prepare": "astro sync || echo ''",

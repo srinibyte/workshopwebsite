@@ -23,7 +23,7 @@ const {
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Spectral:wght@400;500;600;700&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Spectral:wght@400;500;600;700&display=swap"
 			rel="stylesheet"
 		/>
 		<link rel="stylesheet" href="/styles/global.css" />
@@ -49,7 +49,7 @@ const {
 						<a href="/notes" data-clicky>Notes</a>
 						<a href="/gallery" data-clicky>Gallery</a>
 						<a href="/projects" data-clicky>Projects</a>
-						<a href="/contact" data-clicky>Contact</a>
+						<a href="/contact" data-clicky>About</a>
 					</nav>
 					<button
 						class="theme-toggle"
@@ -81,33 +81,52 @@ const {
 					if (audioContext.state === 'suspended') audioContext.resume();
 
 					const now = audioContext.currentTime;
-					const osc = audioContext.createOscillator();
-					const gain = audioContext.createGain();
-					const filter = audioContext.createBiquadFilter();
+					const tone = audioContext.createOscillator();
+					const hiss = audioContext.createBufferSource();
+					const toneGain = audioContext.createGain();
+					const hissGain = audioContext.createGain();
+					const mix = audioContext.createGain();
+					const hissBuffer = audioContext.createBuffer(1, audioContext.sampleRate * 0.014, audioContext.sampleRate);
+					const hissData = hissBuffer.getChannelData(0);
 
-					osc.type = 'square';
-					osc.frequency.setValueAtTime(820, now);
-					osc.frequency.exponentialRampToValueAtTime(500, now + 0.025);
+					for (let i = 0; i < hissData.length; i += 1) {
+						const envelope = Math.exp(-i / 42);
+						hissData[i] = (Math.random() * 2 - 1) * envelope;
+					}
 
-					filter.type = 'lowpass';
-					filter.frequency.value = 2200;
+					tone.type = 'sine';
+					tone.frequency.setValueAtTime(1240, now);
+					tone.frequency.exponentialRampToValueAtTime(860, now + 0.018);
 
-					gain.gain.setValueAtTime(0.0001, now);
-					gain.gain.exponentialRampToValueAtTime(0.045, now + 0.002);
-					gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
+					toneGain.gain.setValueAtTime(0.0001, now);
+					toneGain.gain.exponentialRampToValueAtTime(0.022, now + 0.001);
+					toneGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.018);
 
-					osc.connect(filter);
-					filter.connect(gain);
-					gain.connect(audioContext.destination);
+					hissGain.gain.setValueAtTime(0.0001, now);
+					hissGain.gain.exponentialRampToValueAtTime(0.018, now + 0.0006);
+					hissGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.013);
 
-					osc.start(now);
-					osc.stop(now + 0.05);
+					mix.gain.value = 0.9;
+
+					tone.connect(toneGain);
+					toneGain.connect(mix);
+					hiss.buffer = hissBuffer;
+					hiss.connect(hissGain);
+					hissGain.connect(mix);
+					mix.connect(audioContext.destination);
+
+					tone.start(now);
+					tone.stop(now + 0.02);
+					hiss.start(now);
+					hiss.stop(now + 0.014);
 				};
 
 				document.addEventListener('pointerup', (event) => {
 					const target = event.target;
 					if (!(target instanceof Element)) return;
-					if (!target.closest('a, button, [data-clicky]')) return;
+					const link = target.closest('a[href]');
+					if (!link) return;
+					if (link.hasAttribute('download')) return;
 					clickTone();
 				});
 

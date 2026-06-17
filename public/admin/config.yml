@@ -1,3 +1,7 @@
+local_backend:
+  url: http://localhost:8081/api/v1
+  allowed_hosts: ["127.0.0.1", "localhost"]
+
 backend:
   name: git-gateway
   branch: main
@@ -19,11 +23,16 @@ collections:
     folder: "src/content/blog"
     create: true
     slug: "{{slug}}"
+    summary: "{{title}}"
     fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Description", name: "description", widget: "string" }
-      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", time_format: false }
-      - { label: "Tags", name: "tags", widget: "list", required: false }
+      - { label: "Title", name: "title", widget: "string", hint: "Main post headline" }
+      - { label: "Subtitle / Dek", name: "description", widget: "text", hint: "Short one- or two-line summary shown under the title" }
+      - { label: "Publish Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", time_format: false }
+      - { label: "Draft", name: "draft", widget: "boolean", default: false, required: false, hint: "Draft posts stay hidden from the site" }
+      - { label: "Cover Image", name: "coverImage", widget: "image", required: false }
+      - { label: "Cover Image Alt", name: "coverImageAlt", widget: "string", required: false }
+      - { label: "Tags", name: "tags", widget: "list", required: false, hint: "Used in search and archive filters" }
+      - { label: "Author Note", name: "authorNote", widget: "text", required: false, hint: "Optional note shown after the article" }
       - { label: "Body", name: "body", widget: "markdown" }
 
   - name: "notes"
@@ -31,12 +40,17 @@ collections:
     folder: "src/content/notes"
     create: true
     slug: "{{slug}}"
+    summary: "{{title}}"
     fields:
       - { label: "Title", name: "title", widget: "string" }
-      - { label: "Summary", name: "summary", widget: "string" }
+      - { label: "Summary", name: "summary", widget: "text" }
       - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", time_format: false }
+      - { label: "Draft", name: "draft", widget: "boolean", default: false, required: false }
+      - { label: "Cover Image", name: "coverImage", widget: "image", required: false }
+      - { label: "Cover Image Alt", name: "coverImageAlt", widget: "string", required: false }
       - { label: "Tags", name: "tags", widget: "list", required: false }
       - { label: "External URL", name: "externalUrl", widget: "string", required: false }
+      - { label: "Author Note", name: "authorNote", widget: "text", required: false }
       - label: "Images"
         name: "images"
         widget: "list"
@@ -52,10 +66,14 @@ collections:
     folder: "src/content/projects"
     create: true
     slug: "{{slug}}"
+    summary: "{{title}}"
     fields:
       - { label: "Title", name: "title", widget: "string" }
-      - { label: "Description", name: "description", widget: "string" }
+      - { label: "Description", name: "description", widget: "text" }
       - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", time_format: false }
+      - { label: "Draft", name: "draft", widget: "boolean", default: false, required: false }
+      - { label: "Cover Image", name: "coverImage", widget: "image", required: false }
+      - { label: "Cover Image Alt", name: "coverImageAlt", widget: "string", required: false }
       - label: "Status"
         name: "status"
         widget: "select"
@@ -63,4 +81,5 @@ collections:
         default: "active"
       - { label: "Tags", name: "tags", widget: "list", required: false }
       - { label: "External URL", name: "externalUrl", widget: "string", required: false }
+      - { label: "Author Note", name: "authorNote", widget: "text", required: false }
       - { label: "Body", name: "body", widget: "markdown", required: false }
