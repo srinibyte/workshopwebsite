@@ -64,6 +64,40 @@ const latestNote = notes[0];
 			</div>
 		</section>
 
+		<section class="mobile-home" aria-label="Mobile navigation">
+			<div class="mobile-home-intro">
+				<p class="mobile-home-kicker">Prahlad Srinivasan</p>
+				<h1>Workshop</h1>
+				<p>Simple links for mobile browsing.</p>
+			</div>
+
+			<div class="mobile-home-links">
+				<a href="/blog" data-clicky>Blog</a>
+				<a href="/notes" data-clicky>Notes</a>
+				<a href="/gallery" data-clicky>Gallery</a>
+				<a href="/projects" data-clicky>Projects</a>
+				<a href="/contact" data-clicky>About</a>
+			</div>
+
+			<div class="mobile-home-latest">
+				{latestPost ? (
+					<a class="mobile-home-card" href={`/blog/${latestPost.id}`} data-clicky>
+						<span>Latest Blog</span>
+						<strong>{latestPost.data.title}</strong>
+						<small>{formatDate(latestPost.data.date)}</small>
+					</a>
+				) : null}
+
+				{latestNote ? (
+					<a class="mobile-home-card" href="/notes" data-clicky>
+						<span>Latest Note</span>
+						<strong>{latestNote.data.title}</strong>
+						<small>{formatDate(latestNote.data.date)}</small>
+					</a>
+				) : null}
+			</div>
+		</section>
+
 		<section class="home-latest" aria-label="Latest updates">
 			{latestPost ? (
 				<a class="latest-button" href={`/blog/${latestPost.id}`} data-clicky>
