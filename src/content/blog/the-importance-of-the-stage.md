@@ -65,8 +65,6 @@ I have been lucky enough to have the opportunity to pursue different kinds of re
 
 **I love the blinding floodlights, the glint of eyes staring from the audience, laughs and gasps, boos and hecklers, I love it all. It is a profound feeling to entertain, to surprise, to move, or to convince an audience, even if it's only for a couple minutes. It is riveting, it is stimulating. And the people you work with to make it happen will become your friends for life and share unforgettable memories with you.**
 
-![Stage lights and performance](https://substackcdn.com/image/fetch/$s_!vqeG!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fc31eaad5-0144-4695-91d5-bce0a0c14c9f_5184x3456.jpeg)
-
 *Now, I do not partake in substance or drink, but if I must admit my addiction to something, it is the stage arts. I can only ever remember the events leading to the show and after it, but never the performance itself, the same way a drunk can never seem to remember the night before or how he got there.*
 
 The skills one gains from these arts have been relevant for me in almost every other field. The stage has given me a lot. **All I can give it back is my reverence, and the promise that I will give it more of myself in the future.**

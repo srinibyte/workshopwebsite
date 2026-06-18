@@ -929,12 +929,15 @@ input {
 
 .post-cover {
 	margin: 0;
+	overflow: hidden;
+	border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent 86%);
+	background: var(--paper-2);
 }
 
 .post-cover img {
 	width: 100%;
-	border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent 86%);
-	background: var(--paper-2);
+	aspect-ratio: 16 / 9;
+	object-fit: cover;
 }
 
 .prose {
