@@ -1,5 +1,5 @@
 import { mkdir, readdir, rm, writeFile } from 'node:fs/promises';
-import { dirname, extname, join } from 'node:path';
+import { extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -7,6 +7,7 @@ const contentRoot = join(root, 'src', 'content');
 const uploadRoot = join(root, 'public', 'uploads', 'notion');
 const notionToken = process.env.NOTION_TOKEN;
 const notionVersion = process.env.NOTION_VERSION || '2022-06-28';
+const prune = process.argv.includes('--prune');
 
 const sources = [
 	{
@@ -110,6 +111,8 @@ const getDate = (page) => {
 	const prop = getProperty(page.properties, ['Date', 'Publish Date', 'date']);
 	return prop?.date?.start || page.created_time.slice(0, 10);
 };
+
+const getEditedTime = (page) => page.last_edited_time;
 
 const getCheckbox = (page, names) => {
 	const prop = getProperty(page.properties, names);
@@ -306,6 +309,8 @@ const writeCollection = async (source) => {
 		const title = getTitle(page);
 		const slug = getSlug(page, title);
 		const date = getDate(page);
+		const notionId = page.id;
+		const notionEditedTime = getEditedTime(page);
 		const draft = getCheckbox(page, ['Draft', 'draft']);
 		const tags = getTags(page);
 		const coverFile = getProperty(page.properties, ['Cover Image', 'coverImage'])?.files?.[0];
@@ -325,7 +330,9 @@ const writeCollection = async (source) => {
 			tags,
 			coverImage,
 			coverImageAlt,
-			authorNote
+			authorNote,
+			notionId,
+			notionEditedTime
 		};
 
 		if (source.kind === 'blog') {
@@ -353,22 +360,24 @@ const writeCollection = async (source) => {
 		keptFiles.add(filePath);
 	}
 
-	const existing = await (async () => {
-		try {
-			const files = await readdir(source.folder);
-			return files.filter((file) => file.endsWith('.md')).map((file) => join(source.folder, file));
-		} catch {
-			return [];
-		}
-	})();
+	if (prune) {
+		const existing = await (async () => {
+			try {
+				const files = await readdir(source.folder);
+				return files.filter((file) => file.endsWith('.md')).map((file) => join(source.folder, file));
+			} catch {
+				return [];
+			}
+		})();
 
-	for (const file of existing) {
-		if (!keptFiles.has(file)) {
-			await rm(file, { force: true });
+		for (const file of existing) {
+			if (!keptFiles.has(file)) {
+				await rm(file, { force: true });
+			}
 		}
 	}
 
-	console.log(`[notion] synced ${source.collection}: ${pages.length} entries`);
+	console.log(`[notion] synced ${source.collection}: ${pages.length} entries${prune ? ' (pruned)' : ''}`);
 };
 
 for (const source of sources) {

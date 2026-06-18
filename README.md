@@ -41,6 +41,12 @@ Run:
 npm run notion:pull
 ```
 
+To mirror Notion exactly and remove files that no longer exist there:
+
+```bash
+npm run notion:pull:prune
+```
+
 Required environment variables:
 
 ```bash
@@ -55,6 +61,7 @@ What the sync does:
 - writes markdown into `src/content/blog/`, `src/content/projects/`, and `src/content/notes/`
 - downloads page images into `public/uploads/notion/`
 - preserves the existing site frontmatter shape
+- keeps non-Notion files unless you use the prune command
 
 Recommended Notion properties:
 - `Title`
@@ -70,6 +77,20 @@ Recommended Notion properties:
 - page body content in Notion blocks
 
 If you keep `npm run sync:watch` running, synced content changes will auto-commit and push from this machine to GitHub, which Netlify then deploys.
+
+Recommended local workflow when Notion is the source of truth:
+1. Edit content in Notion.
+2. Run `npm run notion:pull` to refresh the local markdown.
+3. Keep `npm run sync:watch` running to push any generated file changes.
+4. Use `npm run notion:pull:prune` only when you are sure older files should be removed.
+
+For automatic refresh from Notion while you work:
+
+```bash
+npm run notion:watch
+```
+
+That polls the Notion databases every 5 minutes by default and updates the local files. You can change the interval with `NOTION_POLL_INTERVAL_MS`.
 
 ### Blog posts
 

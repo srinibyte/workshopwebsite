@@ -12,7 +12,9 @@ const blog = defineCollection({
 		draft: z.boolean().default(false),
 		coverImage: z.string().optional(),
 		coverImageAlt: z.string().optional(),
-		authorNote: z.string().optional()
+		authorNote: z.string().optional(),
+		notionId: z.string().optional(),
+		notionEditedTime: z.string().optional()
 	})
 });
 
@@ -28,6 +30,8 @@ const notes = defineCollection({
 		coverImage: z.string().optional(),
 		coverImageAlt: z.string().optional(),
 		authorNote: z.string().optional(),
+		notionId: z.string().optional(),
+		notionEditedTime: z.string().optional(),
 		images: z
 			.array(
 				z.object({
@@ -63,7 +67,9 @@ const projects = defineCollection({
 		externalUrl: z.url().optional(),
 		coverImage: z.string().optional(),
 		coverImageAlt: z.string().optional(),
-		authorNote: z.string().optional()
+		authorNote: z.string().optional(),
+		notionId: z.string().optional(),
+		notionEditedTime: z.string().optional()
 	})
 });
 
