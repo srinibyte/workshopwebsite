@@ -1,0 +1,111 @@
+---
+type Props = {
+	contentId: string;
+};
+
+const { contentId } = Astro.props as Props;
+---
+
+<div class="like-control" data-like-control data-content-id={contentId}>
+	<button class="like-button" type="button" aria-label="Like this post" aria-pressed="false">
+		<svg viewBox="0 0 24 24" aria-hidden="true">
+			<path d="M20.8 4.7a5.5 5.5 0 0 0-7.8 0L12 5.8l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21.4l7.8-7.8 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"></path>
+		</svg>
+		<span data-like-count>0</span>
+	</button>
+	<span class="sr-only" aria-live="polite" data-like-status></span>
+</div>
+
+<script>
+	const endpoint = '/.netlify/functions/likes';
+
+	const getVisitorId = () => {
+		const storageKey = 'workshop:visitor-id';
+		let visitorId = window.localStorage.getItem(storageKey);
+		if (!visitorId) {
+			visitorId = window.crypto.randomUUID();
+			window.localStorage.setItem(storageKey, visitorId);
+		}
+		return visitorId;
+	};
+
+	const localLikeKey = (contentId: string) => `workshop:liked:${contentId}`;
+	const localCountKey = (contentId: string) => `workshop:likes:${contentId}`;
+
+	const applyState = (control: Element, count: number, liked: boolean) => {
+		if (!(control instanceof HTMLElement)) return;
+		const button = control.querySelector('.like-button');
+		const countNode = control.querySelector('[data-like-count]');
+		if (!(button instanceof HTMLButtonElement) || !(countNode instanceof HTMLElement)) return;
+
+		countNode.textContent = String(count);
+		button.classList.toggle('is-liked', liked);
+		button.setAttribute('aria-pressed', String(liked));
+		button.setAttribute('aria-label', liked ? 'You liked this post' : 'Like this post');
+		button.disabled = liked;
+	};
+
+	const setStatus = (control: Element, message: string) => {
+		const status = control.querySelector('[data-like-status]');
+		if (status instanceof HTMLElement) status.textContent = message;
+	};
+
+	const loadLike = async (control: Element) => {
+		if (!(control instanceof HTMLElement)) return;
+		const contentId = control.dataset.contentId;
+		if (!contentId) return;
+
+		const visitorId = getVisitorId();
+		const localLiked = window.localStorage.getItem(localLikeKey(contentId)) === 'true';
+		const localCount = Number.parseInt(window.localStorage.getItem(localCountKey(contentId)) || '0', 10);
+		applyState(control, localCount, localLiked);
+
+		try {
+			const response = await fetch(
+				`${endpoint}?id=${encodeURIComponent(contentId)}&visitor=${encodeURIComponent(visitorId)}`
+			);
+			if (!response.ok) throw new Error('Likes endpoint unavailable');
+			const data = await response.json();
+			window.localStorage.setItem(localCountKey(contentId), String(data.count));
+			if (data.liked) window.localStorage.setItem(localLikeKey(contentId), 'true');
+			applyState(control, data.count, Boolean(data.liked));
+		} catch {
+			// Local Astro development has no Netlify Functions runtime.
+		}
+	};
+
+	for (const control of document.querySelectorAll('[data-like-control]')) {
+		void loadLike(control);
+
+		const button = control.querySelector('.like-button');
+		if (!(button instanceof HTMLButtonElement) || !(control instanceof HTMLElement)) continue;
+
+		button.addEventListener('click', async () => {
+			const contentId = control.dataset.contentId;
+			if (!contentId || button.disabled) return;
+
+			const visitorId = getVisitorId();
+			const countNode = control.querySelector('[data-like-count]');
+			const currentCount = Number.parseInt(countNode?.textContent || '0', 10);
+
+			applyState(control, currentCount + 1, true);
+			window.localStorage.setItem(localLikeKey(contentId), 'true');
+			window.localStorage.setItem(localCountKey(contentId), String(currentCount + 1));
+			setStatus(control, 'Liked');
+
+			try {
+				const response = await fetch(endpoint, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ id: contentId, visitor: visitorId })
+				});
+				if (!response.ok) throw new Error('Like could not be saved');
+				const data = await response.json();
+				window.localStorage.setItem(localCountKey(contentId), String(data.count));
+				applyState(control, data.count, true);
+			} catch {
+				setStatus(control, 'Liked locally; it will sync on the hosted site.');
+			}
+		});
+	}
+</script>

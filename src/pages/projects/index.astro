@@ -1,6 +1,7 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import LikeButton from '../../components/LikeButton.astro';
 import { formatDate } from '../../lib/content';
 
 const projects: CollectionEntry<'projects'>[] = (await getCollection('projects'))
@@ -51,6 +52,7 @@ const projects: CollectionEntry<'projects'>[] = (await getCollection('projects')
 							<p>{project.data.authorNote}</p>
 						</section>
 					) : null}
+					<LikeButton contentId={`project:${project.id}`} />
 				</article>
 			))}
 		</section>

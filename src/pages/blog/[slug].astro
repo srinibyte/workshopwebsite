@@ -1,6 +1,7 @@
 ---
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import LikeButton from '../../components/LikeButton.astro';
 import { formatDate } from '../../lib/content';
 
 export async function getStaticPaths() {
@@ -51,5 +52,7 @@ const { Content } = await render(post);
 				<p>{post.data.authorNote}</p>
 			</section>
 		) : null}
+
+		<LikeButton contentId={`blog:${post.id}`} />
 	</main>
 </BaseLayout>

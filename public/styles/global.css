@@ -1056,6 +1056,69 @@ input {
 	color: color-mix(in srgb, var(--ink) 86%, var(--paper) 14%);
 }
 
+.like-control {
+	display: flex;
+	align-items: center;
+	width: fit-content;
+	margin-top: 8px;
+}
+
+.like-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px 0;
+	border: 0;
+	border-radius: 0;
+	background: none;
+	color: color-mix(in srgb, var(--muted) 82%, transparent 18%);
+	cursor: pointer;
+	transition:
+		color 140ms ease,
+		opacity 140ms ease;
+}
+
+.like-button svg {
+	width: 15px;
+	height: 15px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.65;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.like-button span {
+	min-width: 1ch;
+	font-size: 0.72rem;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+	line-height: 1;
+}
+
+.like-button:hover,
+.like-button:focus-visible {
+	color: var(--ink);
+}
+
+.like-button:focus-visible {
+	outline: 1px solid currentColor;
+	outline-offset: 4px;
+}
+
+.like-button.is-liked {
+	color: color-mix(in srgb, var(--ink) 55%, var(--muted) 45%);
+}
+
+.like-button.is-liked svg {
+	fill: currentColor;
+}
+
+.like-button:disabled {
+	cursor: default;
+	opacity: 0.72;
+}
+
 .contact-page {
 	align-items: start;
 }
