@@ -33,7 +33,25 @@ collections:
       - { label: "Cover Image Alt", name: "coverImageAlt", widget: "string", required: false }
       - { label: "Tags", name: "tags", widget: "list", required: false, hint: "Used in search and archive filters" }
       - { label: "Author Note", name: "authorNote", widget: "text", required: false, hint: "Optional note shown after the article" }
-      - { label: "Body", name: "body", widget: "markdown" }
+      - label: "Article"
+        name: "body"
+        widget: "richtext"
+        hint: "Place the cursor between paragraphs and use the image control to upload or insert as many inline images as needed."
+        modes: ["rich_text", "raw"]
+        buttons:
+          - "bold"
+          - "italic"
+          - "strikethrough"
+          - "code"
+          - "link"
+          - "heading-two"
+          - "heading-three"
+          - "quote"
+          - "bulleted-list"
+          - "numbered-list"
+        editor_components:
+          - "image"
+          - "code-block"
 
   - name: "notes"
     label: "Notes"

@@ -98,6 +98,8 @@ Add markdown files to:
 
 `src/content/blog/`
 
+In the local or hosted editor, the `Article` field supports inline images. Put the cursor between paragraphs, select the image control, and upload or choose an image. Repeat anywhere in the article for additional images.
+
 Frontmatter shape:
 
 ```md
