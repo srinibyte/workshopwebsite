@@ -134,6 +134,12 @@ const getStatus = (page) => {
 	return prop?.select?.name || 'active';
 };
 
+const getNoteKind = (page) => {
+	const prop = getProperty(page.properties, ['Type', 'Kind', 'type', 'kind']);
+	const value = prop?.select?.name?.toLowerCase();
+	return ['bookmark', 'photo', 'note'].includes(value) ? value : 'note';
+};
+
 const getUrl = (page) => {
 	const prop = getProperty(page.properties, ['External URL', 'External Url', 'externalUrl']);
 	return prop?.url || '';
@@ -215,9 +221,6 @@ const renderBlock = async (block, context, depth = 0) => {
 				`${context.slug}-${block.id}`,
 				extname(new URL(imageUrl).pathname) || '.jpg'
 			);
-			if (context.collection === 'notes') {
-				context.images.push({ src: downloaded, alt, caption: caption || undefined });
-			}
 			return `![${alt}](${downloaded})${children ? `\n\n${children}` : ''}`;
 		}
 		case 'bookmark':
@@ -320,7 +323,7 @@ const writeCollection = async (source) => {
 			coverFile?.name ||
 			title;
 		const authorNote = getText(page, ['Author Note', 'authorNote']);
-		const context = { collection: source.collection, slug, images: [] };
+		const context = { collection: source.collection, slug };
 		const body = await loadChildren(page.id, context);
 
 		const frontmatter = {
@@ -330,7 +333,6 @@ const writeCollection = async (source) => {
 			tags,
 			coverImage,
 			coverImageAlt,
-			authorNote,
 			notionId,
 			notionEditedTime
 		};
@@ -338,20 +340,22 @@ const writeCollection = async (source) => {
 		if (source.kind === 'blog') {
 			const description = getText(page, ['Subtitle / Dek', 'Description', 'description']) || title;
 			frontmatter.description = description;
+			if (authorNote) frontmatter.authorNote = authorNote;
 		}
 
 		if (source.kind === 'projects') {
 			frontmatter.description = getText(page, ['Description', 'description']) || title;
 			frontmatter.status = getStatus(page);
+			if (authorNote) frontmatter.authorNote = authorNote;
 			const externalUrl = getUrl(page);
 			if (externalUrl) frontmatter.externalUrl = externalUrl;
 		}
 
 		if (source.kind === 'notes') {
+			frontmatter.kind = getNoteKind(page);
 			frontmatter.summary = getText(page, ['Summary', 'summary']) || title;
 			const externalUrl = getUrl(page);
 			if (externalUrl) frontmatter.externalUrl = externalUrl;
-			if (context.images.length) frontmatter.images = context.images;
 		}
 
 		const filePath = join(source.folder, `${slug}.md`);

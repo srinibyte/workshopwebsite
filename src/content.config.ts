@@ -22,25 +22,16 @@ const notes = defineCollection({
 	loader: glob({ base: './src/content/notes', pattern: '**/*.md' }),
 	schema: z.object({
 		title: z.string(),
-		summary: z.string(),
+		summary: z.string().default(''),
 		date: z.coerce.date(),
+		kind: z.enum(['bookmark', 'photo', 'note']).default('note'),
 		draft: z.boolean().default(false),
 		tags: z.array(z.string()).default([]),
 		externalUrl: z.url().optional(),
 		coverImage: z.string().optional(),
 		coverImageAlt: z.string().optional(),
-		authorNote: z.string().optional(),
 		notionId: z.string().optional(),
-		notionEditedTime: z.string().optional(),
-		images: z
-			.array(
-				z.object({
-					src: z.string(),
-					alt: z.string(),
-					caption: z.string().optional()
-				})
-			)
-			.default([])
+		notionEditedTime: z.string().optional()
 	})
 });
 

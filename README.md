@@ -66,6 +66,7 @@ Recommended Notion properties:
 - `Title`
 - `Slug`
 - `Date`
+- `Type` (`Bookmark`, `Photo`, or `Note`) for Notes
 - `Draft`
 - `Tags`
 - `Cover Image`
@@ -121,26 +122,23 @@ Frontmatter shape:
 title: "Note title"
 summary: "Short summary"
 date: "2026-05-27"
+kind: "note"
 tags: ["tag-one", "tag-two"]
 externalUrl: "https://example.com"
-images:
-  - src: "/uploads/your-image.jpg"
-    alt: "Describe the image"
-    caption: "Optional caption"
+coverImage: "/uploads/your-image.jpg"
+coverImageAlt: "Describe the image"
 ---
 ```
 
-Write the note body below the frontmatter. Notes render directly into the feed on `/notes`.
+Set `kind` to `bookmark`, `photo`, or `note`. Write any optional text below the frontmatter. All three types render in one chronological feed on `/notes`, with the sidebar controlling the visible category.
 
-### Photos in Notes
+### Note images
 
 Put image files in:
 
 `public/uploads/`
 
-If an image belongs to a note, add it to that note's `images:` frontmatter. It will appear in:
-- the note feed
-- the photos section on `/notes`
+Add an image through `coverImage` and set `kind: "photo"`.
 
 ## Obsidian workflow
 

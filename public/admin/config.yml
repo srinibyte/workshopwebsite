@@ -43,23 +43,22 @@ collections:
     summary: "{{title}}"
     fields:
       - { label: "Title", name: "title", widget: "string" }
-      - { label: "Summary", name: "summary", widget: "text" }
+      - { label: "Summary", name: "summary", widget: "text", required: false }
       - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", time_format: false }
+      - label: "Type"
+        name: "kind"
+        widget: "select"
+        options:
+          - { label: "Bookmark", value: "bookmark" }
+          - { label: "Photo", value: "photo" }
+          - { label: "Note", value: "note" }
+        default: "note"
       - { label: "Draft", name: "draft", widget: "boolean", default: false, required: false }
-      - { label: "Cover Image", name: "coverImage", widget: "image", required: false }
-      - { label: "Cover Image Alt", name: "coverImageAlt", widget: "string", required: false }
+      - { label: "Image", name: "coverImage", widget: "image", required: false }
+      - { label: "Image Alt", name: "coverImageAlt", widget: "string", required: false }
       - { label: "Tags", name: "tags", widget: "list", required: false }
-      - { label: "External URL", name: "externalUrl", widget: "string", required: false }
-      - { label: "Author Note", name: "authorNote", widget: "text", required: false }
-      - label: "Images"
-        name: "images"
-        widget: "list"
-        required: false
-        fields:
-          - { label: "Image", name: "src", widget: "image" }
-          - { label: "Alt", name: "alt", widget: "string" }
-          - { label: "Caption", name: "caption", widget: "string", required: false }
-      - { label: "Body", name: "body", widget: "markdown" }
+      - { label: "Bookmark URL", name: "externalUrl", widget: "string", required: false }
+      - { label: "Text", name: "body", widget: "markdown", required: false }
 
   - name: "projects"
     label: "Projects"
