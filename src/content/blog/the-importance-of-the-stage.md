@@ -2,7 +2,7 @@
 title: "The Importance of the Stage."
 description: "a love letter to the all-pervading art form."
 date: "2025-05-07"
-tags: ["theatre", "acting", "performance"]
+tags: ["theatre"]
 coverImage: "/uploads/blog-covers/stage.jpeg"
 coverImageAlt: "A theatre stage illuminated by performance lights"
 ---

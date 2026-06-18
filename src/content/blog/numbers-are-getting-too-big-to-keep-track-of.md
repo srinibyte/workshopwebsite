@@ -2,7 +2,7 @@
 title: "Numbers are getting too big to keep track of."
 description: "how to work with numbers better & stay inquisitive."
 date: "2025-07-22"
-tags: ["numbers", "reasoning", "context"]
+tags: ["numbers"]
 coverImage: "/uploads/blog-covers/numbers.jpeg"
 coverImageAlt: "An illustration reacting to a surprisingly large number"
 ---

@@ -2,7 +2,7 @@
 title: "I must write."
 description: "To escape this ubiquitous sedation - or die trying."
 date: "2025-05-06"
-tags: ["writing", "creativity", "language"]
+tags: ["writing"]
 coverImage: "/uploads/blog-covers/i-must-write.png"
 coverImageAlt: "Writing flagged as likely AI-generated"
 ---
