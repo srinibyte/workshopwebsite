@@ -3,6 +3,8 @@ title: "Numbers are getting too big to keep track of."
 description: "how to work with numbers better & stay inquisitive."
 date: "2025-07-22"
 tags: ["numbers", "reasoning", "context"]
+coverImage: "/uploads/blog-covers/numbers.jpeg"
+coverImageAlt: "An illustration reacting to a surprisingly large number"
 ---
 
 <p>Today in class, our professor exclaimed that IIM Bangalore was responsible for about <strong>4,500 tonnes of CO2 emissions</strong> per annum. <em>Crazy, right?</em><br><br>She quoted this data point emphatically, expecting a reaction from the classroom. This reaction did not come. The classroom responded with a sheepish silence, and several sideward glances to check reactions from other potentially more informed classmates. The class was unsure of what this data meant. Was the professor expecting jubilant smiles or murmurs of dismay? <br><br>Was this supposed to be a good thing? <em>4,500 tonnes of CO2… hmm, a tonne is 1000kg. so 4,500 of those seem like a lot, I guess.<br><br>But nobody asked. Nobody wanted to seem less intelligent. </em>So as usual, it was just brushed over and drowned away with a wave of coordinated nods of understanding and a barrage of perfunctory smiles. </p>

@@ -3,6 +3,8 @@ title: "The Importance of the Stage."
 description: "a love letter to the all-pervading art form."
 date: "2025-05-07"
 tags: ["theatre", "acting", "performance"]
+coverImage: "/uploads/blog-covers/stage.jpeg"
+coverImageAlt: "A theatre stage illuminated by performance lights"
 ---
 
 Here in the East, deep reverence is given to inanimate objects, concepts, tools and traditions. In India, cycles, televisions, laptops, houses, cows, even axes & sickles are amongst the many tools that can be considered holy. A shopkeeper performs a short prayer at the front door before he opens up shop in the morning. An autorickshaw driver refuses to take his first ride before his dashboard is adorned with flowers, or an image of his deity of choice. The old *TVS 50* bike is considered *Goddess Lakshmi* (a representation of wealth) to many small business owners in Tamilnadu, for its diligent mule-like labours in running a business. The examples are infinite, and calls for another article on fascinating objects or places that are deified in this country.
