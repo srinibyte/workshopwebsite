@@ -46,13 +46,21 @@ const tags = [...new Set(posts.flatMap((post: CollectionEntry<'blog'>) => post.d
 		<div class="blog-listing">
 			{posts.map((post: CollectionEntry<'blog'>) => (
 				<a
-					class="list-card"
+					class="list-card blog-list-card"
 					href={`/blog/${post.id}`}
 					data-clicky
 					data-filter-target="blog"
 					data-tags={post.data.tags.join(',')}
 					data-search-text={[post.data.title, post.data.description, ...post.data.tags].join(' ').toLowerCase()}
 				>
+					<div class="blog-list-card-copy">
+						<time>{formatDate(post.data.date)}</time>
+						<h2>{post.data.title}</h2>
+						<p>{post.data.description}</p>
+						<div class="tag-row">
+							{post.data.tags.map((tag: string) => <span>{tag}</span>)}
+						</div>
+					</div>
 					{post.data.coverImage ? (
 						<img
 							class="list-card-cover"
@@ -61,12 +69,6 @@ const tags = [...new Set(posts.flatMap((post: CollectionEntry<'blog'>) => post.d
 							loading="lazy"
 						/>
 					) : null}
-					<time>{formatDate(post.data.date)}</time>
-					<h2>{post.data.title}</h2>
-					<p>{post.data.description}</p>
-					<div class="tag-row">
-						{post.data.tags.map((tag: string) => <span>{tag}</span>)}
-					</div>
 				</a>
 			))}
 		</div>
