@@ -12,7 +12,8 @@
 		"check": "astro check",
 		"check:watch": "astro check --watch",
 		"admin:proxy": "npx decap-server",
-		"sync:watch": "node scripts/sync-content.mjs"
+		"sync:watch": "node scripts/sync-content.mjs",
+		"notion:pull": "node scripts/sync-notion.mjs"
 	},
 	"devDependencies": {
 		"@astrojs/check": "^0.9.9",

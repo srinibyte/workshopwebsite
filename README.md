@@ -28,6 +28,49 @@ npm run build
 
 You can maintain this without Codex.
 
+### Notion sync
+
+You can also treat Notion as the source of truth for:
+- `Blog`
+- `Projects`
+- `Notes`
+
+Run:
+
+```bash
+npm run notion:pull
+```
+
+Required environment variables:
+
+```bash
+NOTION_TOKEN=secret_xxx
+NOTION_BLOG_DATABASE_ID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+NOTION_PROJECTS_DATABASE_ID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+NOTION_NOTES_DATABASE_ID=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+What the sync does:
+- pulls each Notion database
+- writes markdown into `src/content/blog/`, `src/content/projects/`, and `src/content/notes/`
+- downloads page images into `public/uploads/notion/`
+- preserves the existing site frontmatter shape
+
+Recommended Notion properties:
+- `Title`
+- `Slug`
+- `Date`
+- `Draft`
+- `Tags`
+- `Cover Image`
+- `Cover Image Alt`
+- `Author Note`
+- `Description` or `Summary`
+- `Status` for projects
+- page body content in Notion blocks
+
+If you keep `npm run sync:watch` running, synced content changes will auto-commit and push from this machine to GitHub, which Netlify then deploys.
+
 ### Blog posts
 
 Add markdown files to:
