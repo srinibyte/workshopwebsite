@@ -4,7 +4,6 @@ Astro site for:
 - `Homepage`
 - `Blog`
 - `Notes`
-- `Gallery`
 - `Projects`
 - `Contact`
 
@@ -133,7 +132,7 @@ images:
 
 Write the note body below the frontmatter. Notes render directly into the feed on `/notes`.
 
-### Gallery uploads
+### Photos in Notes
 
 Put image files in:
 
@@ -141,22 +140,7 @@ Put image files in:
 
 If an image belongs to a note, add it to that note's `images:` frontmatter. It will appear in:
 - the note feed
-- the gallery page
-
-If you want a standalone gallery image, add a markdown file to:
-
-`src/content/gallery/`
-
-Example:
-
-```md
----
-title: "Gallery item"
-date: "2026-05-27"
-image: "/uploads/example.jpg"
-alt: "Describe the image"
----
-```
+- the photos section on `/notes`
 
 ## Obsidian workflow
 
