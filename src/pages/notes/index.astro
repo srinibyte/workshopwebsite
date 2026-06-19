@@ -31,7 +31,7 @@ const counts = {
 		<header class="page-top notes-page-header">
 			<div>
 				<h1>Notes</h1>
-				<p>Short pieces: something written, saved, or seen.</p>
+				<p>Seen, heard, scribbled.</p>
 			</div>
 		</header>
 
@@ -66,43 +66,78 @@ const counts = {
 						data-filter-target="notes"
 						data-tags={note.data.kind}
 					>
-						<header class="note-entry-header">
-							<div>
-								<p class="note-entry-kind">{note.data.kind}</p>
-								<h2>{note.data.title}</h2>
+						<details class="note-disclosure">
+							<summary class="note-disclosure-summary">
+								<span class="note-entry-header">
+									<span class="note-entry-heading">
+										<span class="note-entry-kind">{note.data.kind}</span>
+										<span class="note-entry-title">{note.data.title}</span>
+										{note.data.summary ? (
+											<span class="note-entry-summary">{note.data.summary}</span>
+										) : null}
+									</span>
+									<span class="note-entry-meta">
+										<time datetime={note.data.date.toISOString()}>{formatDate(note.data.date)}</time>
+										<span class="note-disclosure-arrow" aria-hidden="true"></span>
+									</span>
+								</span>
+
+								{note.data.coverImage ? (
+									<span class="note-entry-cover-preview" aria-hidden="true">
+										<img
+											src={note.data.coverImage}
+											alt=""
+											loading="lazy"
+										/>
+									</span>
+								) : null}
+							</summary>
+
+							<div class="note-disclosure-content">
+								{note.data.coverImage ? (
+									<figure class="note-entry-cover">
+										<img
+											src={note.data.coverImage}
+											alt={note.data.coverImageAlt || note.data.title}
+											loading="lazy"
+										/>
+									</figure>
+								) : null}
+
+								<div class="prose note-entry-body">
+									<Content />
+								</div>
+
+								{note.data.images?.length ? (
+									<div class="note-entry-gallery">
+										{note.data.images.map((photo: { image: string; alt?: string; caption?: string }) => (
+											<figure>
+												<img
+													src={photo.image}
+													alt={photo.alt || ''}
+													loading="lazy"
+												/>
+												{photo.caption ? <figcaption>{photo.caption}</figcaption> : null}
+											</figure>
+										))}
+									</div>
+								) : null}
+
+								{note.data.externalUrl ? (
+									<p class="note-entry-link">
+										<a href={note.data.externalUrl} target="_blank" rel="noreferrer" data-clicky>
+											Visit bookmark
+										</a>
+									</p>
+								) : null}
+
+								{note.data.tags.length ? (
+									<div class="tag-row note-entry-tags">
+										{note.data.tags.map((tag: string) => <span>{tag}</span>)}
+									</div>
+								) : null}
 							</div>
-							<time datetime={note.data.date.toISOString()}>{formatDate(note.data.date)}</time>
-						</header>
-
-						{note.data.summary ? <p class="note-entry-summary">{note.data.summary}</p> : null}
-
-						{note.data.coverImage ? (
-							<figure class="note-entry-cover">
-								<img
-									src={note.data.coverImage}
-									alt={note.data.coverImageAlt || note.data.title}
-									loading="lazy"
-								/>
-							</figure>
-						) : null}
-
-						<div class="prose note-entry-body">
-							<Content />
-						</div>
-
-						{note.data.externalUrl ? (
-							<p class="note-entry-link">
-								<a href={note.data.externalUrl} target="_blank" rel="noreferrer" data-clicky>
-									Visit bookmark
-								</a>
-							</p>
-						) : null}
-
-						{note.data.tags.length ? (
-							<div class="tag-row note-entry-tags">
-								{note.data.tags.map((tag: string) => <span>{tag}</span>)}
-							</div>
-						) : null}
+						</details>
 
 						<LikeButton contentId={`note:${note.id}`} />
 					</article>

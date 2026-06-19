@@ -22,7 +22,14 @@ const latestNote = notes[0];
 			<div class="image-stage">
 				<img
 					class="home-illustration"
-					src="/uploads/home-workshop.png"
+					src="/uploads/prahl-comic-final-1600.jpg"
+					srcset="/uploads/prahl-comic-final-1000.jpg 1000w, /uploads/prahl-comic-final-1600.jpg 1600w, /uploads/prahl-comic-final-2200.jpg 2200w"
+					sizes="100vw"
+					width="2200"
+					height="1239"
+					fetchpriority="high"
+					loading="eager"
+					decoding="async"
 					alt="Comic-style workshop scene with Prahlad at a desk pointing toward a sunset window."
 				/>
 
@@ -31,14 +38,9 @@ const latestNote = notes[0];
 					<span class="hotspot-label" aria-hidden="true">Projects</span>
 				</a>
 
-				<a class="hotspot hotspot-camera-main" href="/notes" data-clicky data-follow-label aria-label="Open Notes from main camera">
-					<span class="sr-only">Notes</span>
-					<span class="hotspot-label" aria-hidden="true">Notes</span>
-				</a>
-
-				<a class="hotspot hotspot-camera-small" href="/notes" data-clicky data-follow-label aria-label="Open Notes from small camera">
-					<span class="sr-only">Notes</span>
-					<span class="hotspot-label" aria-hidden="true">Notes</span>
+				<a class="hotspot hotspot-camera-main" href="/notes?filter=photo" data-clicky data-follow-label aria-label="Open Photos from camera">
+					<span class="sr-only">Photos</span>
+					<span class="hotspot-label" aria-hidden="true">Photos</span>
 				</a>
 
 				<a
@@ -61,14 +63,18 @@ const latestNote = notes[0];
 					<span class="sr-only">Notes</span>
 					<span class="hotspot-label" aria-hidden="true">Notes</span>
 				</a>
+
+				<a class="hotspot hotspot-person" href="/contact" data-clicky data-follow-label aria-label="Open About from person">
+					<span class="sr-only">About</span>
+					<span class="hotspot-label" aria-hidden="true">About</span>
+				</a>
 			</div>
 		</section>
 
 		<section class="mobile-home" aria-label="Mobile navigation">
 			<div class="mobile-home-intro">
-				<p class="mobile-home-kicker">Prahlad Srinivasan</p>
 				<h1>Workshop</h1>
-				<p>Simple links for mobile browsing.</p>
+				<p>LITE MODE</p>
 			</div>
 
 			<div class="mobile-home-links">

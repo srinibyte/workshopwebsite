@@ -13,7 +13,7 @@ This reverence comes from a profound respect in our culture for the things and p
 
 **All of these are honest expressions of gratitude to the instruments and arenas upon which our lifestyle rests.** *Thank you, for helping me be who I am. Thank you, for allowing me to lead this life at your mercy.*
 
-![Kabaddi - Navi Mumbai Sports Festival 2020](https://substackcdn.com/image/fetch/$s_!YRGt!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fdf896fa9-1673-4f0a-b169-6915dc63d36c_720x405.jpeg)
+![Kabaddi - Navi Mumbai Sports Festival 2020](/uploads/blog/stage/kabaddi.jpeg)
 
 I sincerely appreciate this reverence. It shows that you take your work or art seriously, and bring an unwavering respect to all your activities in that field. More effort, more attention to detail. More *care.* Gives us a whole new meaning to the phrase "performed his duties *religiously.*"
 
@@ -33,7 +33,7 @@ What started as emulation became habit, which turned to tradition, and finally b
 
 ## YamaDharmaraja, Chitragupta & The Spark
 
-![Me as Chitragupta](https://substackcdn.com/image/fetch/$s_!RClE!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fa0a143f0-ceeb-43fd-9005-721103f7bc66_989x728.png)
+![Me as Chitragupta](/uploads/blog/stage/chitragupta.jpg)
 
 On the left above is me, aged about 6, playing **Chitragupta**, the registrar of the dead. (On the right is my friend, playing the stubborn Lord Yama, the god of death.) My father wrote a hilarious satirical play about Chitragupta losing his laptop to a hacker and with it the so-called "nice & naughty" list, rendering the operations of the department of death compromised.
 
@@ -51,7 +51,7 @@ There was one event that I distinctly remember. We were on vacation in Coorg, an
 
 Point is, I simply couldn't bring myself to do it. I was scared that it would be cringe, and had a complete meltdown and bawled my face off. It's a small, inconsequential thing, but I remember that day vividly as my own failure.
 
-![Google Plus post from that night](https://substackcdn.com/image/fetch/$s_!KPg6!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fbd9c695c-3bc7-4199-9244-24d32be1a9f5_887x1280.jpeg)
+![Google Plus post from that night](/uploads/blog/stage/google-plus.jpeg)
 
 I posted this on Google Plus that night in 2015. Not quite sure what I was thinking or why I was so devastated, but I think I expected more of myself. Something clicked and I started actively seeking that discomfort and putting myself there on purpose after this episode. Some months down the line, I did perform that standup.
 
@@ -71,7 +71,7 @@ The skills one gains from these arts have been relevant for me in almost every o
 
 If you want your work to be authentic, you want it to be any good, I believe you need to bring with you the **reverence** we discussed today. You must be a fanatic. With a bow to the wooden floor, a gentle stroke of my arm, and my hand to my heart, until we meet again.
 
-![Curtain call](https://substackcdn.com/image/fetch/$s_!sVJm!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd9542b8b-2080-43ff-9049-5bfa2b1df473_1180x538.png)
+![Curtain call](/uploads/blog/stage/curtain-call.jpg)
 
 Thank you for reading,  
 Prahlad

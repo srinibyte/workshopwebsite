@@ -24,7 +24,10 @@ const { Content } = await render(post);
 			<p class="back-row">
 				<a class="back-link" href="/blog" data-clicky>Back to Blog</a>
 			</p>
-			<time>{formatDate(post.data.date)}</time>
+			<div class="post-meta-row">
+				<time>{formatDate(post.data.date)}</time>
+				<LikeButton contentId={`blog:${post.id}`} />
+			</div>
 			<h1>{post.data.title}</h1>
 			<p class="post-dek">{post.data.description}</p>
 			<div class="tag-row">
@@ -53,6 +56,5 @@ const { Content } = await render(post);
 			</section>
 		) : null}
 
-		<LikeButton contentId={`blog:${post.id}`} />
 	</main>
 </BaseLayout>

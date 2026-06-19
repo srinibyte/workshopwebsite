@@ -6,24 +6,22 @@
 	"scripts": {
 		"dev": "astro dev",
 		"dev:local": "astro dev --host localhost --port 4321",
-		"build": "astro build",
+		"build": "npm run images:optimize && astro build",
 		"preview": "astro preview",
 		"prepare": "astro sync || echo ''",
 		"check": "astro check",
 		"check:watch": "astro check --watch",
+		"images:optimize": "node scripts/optimize-uploads.mjs",
 		"admin:proxy": "npx decap-server",
-		"sync:watch": "node scripts/sync-content.mjs",
 		"notion:pull": "node scripts/sync-notion.mjs",
 		"notion:pull:prune": "node scripts/sync-notion.mjs --prune",
 		"notion:watch": "node scripts/watch-notion.mjs"
 	},
 	"devDependencies": {
 		"@astrojs/check": "^0.9.9",
-		"@astrojs/mdx": "^5.0.6",
-		"@astrojs/svelte": "^8.1.1",
 		"@types/node": "^25.9.1",
 		"astro": "^6.3.7",
-		"svelte": "^5.55.2",
+		"sharp": "^0.34.5",
 		"typescript": "^6.0.2",
 		"vite": "^7.3.3"
 	},

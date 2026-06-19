@@ -1,0 +1,67 @@
+---
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="robots" content="noindex,nofollow,noarchive" />
+		<title>Prahlad's Website Admin</title>
+	</head>
+	<body>
+		<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+		<script src="https://unpkg.com/decap-cms@3.12.0/dist/decap-cms.js"></script>
+		<script is:inline>
+			function escapeHtml(value) {
+				return String(value || '')
+					.replace(/&/g, '&amp;')
+					.replace(/</g, '&lt;')
+					.replace(/>/g, '&gt;')
+					.replace(/"/g, '&quot;')
+					.replace(/'/g, '&#39;');
+			}
+
+			function registerInlineTextComponent(id, label, tagName) {
+				CMS.registerEditorComponent({
+					id,
+					label,
+					fields: [
+						{
+							name: 'text',
+							label: 'Text',
+							widget: 'string'
+						}
+					],
+					pattern: new RegExp('<' + tagName + '>(.*?)</' + tagName + '>'),
+					fromBlock(match) {
+						return {
+							text: match[1]
+						};
+					},
+					toBlock(data) {
+						return '<' + tagName + '>' + escapeHtml(data.text) + '</' + tagName + '>';
+					},
+					toPreview(data) {
+						return '<' + tagName + '>' + escapeHtml(data.text) + '</' + tagName + '>';
+					}
+				});
+			}
+
+			if (window.CMS) {
+				registerInlineTextComponent('superscript', 'Superscript', 'sup');
+				registerInlineTextComponent('subscript', 'Subscript', 'sub');
+			}
+
+			if (window.netlifyIdentity) {
+				window.netlifyIdentity.on('init', function (user) {
+					if (!user) {
+						window.netlifyIdentity.on('login', function () {
+							document.location.href = '/admin/';
+						});
+					}
+				});
+			}
+		</script>
+	</body>
+</html>

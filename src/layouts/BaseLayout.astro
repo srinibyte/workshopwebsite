@@ -23,11 +23,10 @@ const {
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Spectral:wght@400;500;600;700&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Spectral:wght@400;500;600;700&display=swap"
 			rel="stylesheet"
 		/>
 		<link rel="stylesheet" href="/styles/global.css" />
-		<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 		<script is:inline>
 			(() => {
 				const storedTheme = window.localStorage.getItem('theme');
@@ -65,14 +64,22 @@ const {
 			</header>
 
 			<slot />
-
-			{bodyClass.includes('home-body') ? (
-				<div class="home-signature" aria-hidden="true">Prahlad Srinivasan</div>
-			) : null}
 		</div>
 
 		<script is:inline>
 			(() => {
+				for (const link of document.querySelectorAll('a[href]')) {
+					if (!(link instanceof HTMLAnchorElement)) continue;
+
+					const url = new URL(link.href, window.location.href);
+					if (!['http:', 'https:'].includes(url.protocol) || url.origin === window.location.origin) {
+						continue;
+					}
+
+					link.target = '_blank';
+					link.rel = 'noopener noreferrer';
+				}
+
 				let audioContext;
 
 				const clickTone = () => {
@@ -178,7 +185,11 @@ const {
 						});
 					}
 
-					update('all', currentQuery());
+					const requestedFilter = new URLSearchParams(window.location.search).get('filter');
+					const initialFilter = buttons.some((button) => button.getAttribute('data-filter-value') === requestedFilter)
+						? requestedFilter
+						: 'all';
+					update(initialFilter, currentQuery());
 				}
 
 				const followLabels = [...document.querySelectorAll('[data-follow-label]')];

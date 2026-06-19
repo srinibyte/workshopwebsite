@@ -1,0 +1,74 @@
+{
+  "blog/numbers/cosmic-calendar.jpg:2200:82:82:82": {
+    "hash": "121488a8e60d5853bea2406539309428c94b1d853a25f3d3bfdfbbba9a03ad65",
+    "bytes": 145359
+  },
+  "blog/numbers/logarithmic-scale.png:2200:82:82:82": {
+    "hash": "0858f74b346b299e3c227ef50de1a240887d9ace1183417f051ba24ebe0beceb",
+    "bytes": 65430
+  },
+  "blog/numbers/matrix.jpeg:2200:82:82:82": {
+    "hash": "7405d747a91b0b7f8b664ae6f5e973579bb9131476f198e87ead65aaa8938f0b",
+    "bytes": 151193
+  },
+  "blog/numbers/measurement-meme.jpeg:2200:82:82:82": {
+    "hash": "dc61d3c9c1964cb0e35b61bb0825b2841ad80d99635db7e90a6e9138739a5dbb",
+    "bytes": 50487
+  },
+  "blog/numbers/money-comparison.jpg:2200:82:82:82": {
+    "hash": "ba33cb5975d6829dec4a6371119ffbd457e58b876b9f858740cb41351fcb440f",
+    "bytes": 52397
+  },
+  "blog/stage/chitragupta.jpg:2200:82:82:82": {
+    "hash": "1527181c9426bbb742a1f1be1d824701ff5865b3f1d1e47900c1d8c603067ed8",
+    "bytes": 81338
+  },
+  "blog/stage/curtain-call.jpg:2200:82:82:82": {
+    "hash": "5d9735f8c6c0503d3f066be64117109dd4e960cadd09243dffde41792e3953fa",
+    "bytes": 51680
+  },
+  "blog/stage/google-plus.jpeg:2200:82:82:82": {
+    "hash": "c28d91478106a9ee9b1860a72a2676e5cc7ce529b47b9887433f4fbc8608d9bd",
+    "bytes": 112191
+  },
+  "blog/stage/kabaddi.jpeg:2200:82:82:82": {
+    "hash": "9ff91a8bd254ddb4250ec7b9ff8487499f83d52a94e5f239a858110e8ef1825b",
+    "bytes": 41743
+  },
+  "blog-covers/i-must-write.png:2200:82:82:82": {
+    "hash": "81ad61fd42048ee4c475f4cb51b3a7a5c53b1f362f90dfba43708d4fc8daeb7a",
+    "bytes": 3959
+  },
+  "blog-covers/numbers.jpeg:2200:82:82:82": {
+    "hash": "5722bbea968b8a50b38b35dab3537cece4275a097d704f54283a5dff92261029",
+    "bytes": 42963
+  },
+  "blog-covers/stage.jpeg:2200:82:82:82": {
+    "hash": "e3c72cf4f35190730a05c7059662c469c25fa415f7c5512af540d25b5ab570cd",
+    "bytes": 88433
+  },
+  "home-workshop.jpg:2200:82:82:82": {
+    "hash": "b25de51db9aff973929b186d9152ed5bebae75769c5c17494d7e560b0a6dbc27",
+    "bytes": 426122
+  },
+  "prahl-comic-final-1000.jpg:2200:82:82:82": {
+    "hash": "31a1917b18da402e51df0c16713836c2e11d6521d4874ea165805beecf5be191",
+    "bytes": 105470
+  },
+  "prahl-comic-final-1600.jpg:2200:82:82:82": {
+    "hash": "05c90b12652e7b8a0cb19e68ba06af23d1f07ec60c2ff96fc33f609840b3b7cd",
+    "bytes": 235805
+  },
+  "prahl-comic-final-2200.jpg:2200:82:82:82": {
+    "hash": "f7aa95515239e4b829fbf0bf73669fd990f30cbbdb012cb673366fe1b1b3fc29",
+    "bytes": 394225
+  },
+  "prahl-comic-final.jpg:2200:82:82:82": {
+    "hash": "6f99d23442e61689eb0eaa30479a0c6fc8c03575226fe7e9744a6a3400a5a193",
+    "bytes": 415365
+  },
+  "whatsapp-image-2026-05-27-at-19.16.58.jpeg:2200:82:82:82": {
+    "hash": "d797d97e46f2fed139a69c70b1d563b81493d2076510350d2c5c25f977ffe5cd",
+    "bytes": 104686
+  }
+}

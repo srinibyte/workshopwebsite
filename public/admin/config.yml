@@ -50,6 +50,8 @@ collections:
           - "bulleted-list"
           - "numbered-list"
         editor_components:
+          - "superscript"
+          - "subscript"
           - "image"
           - "code-block"
 
@@ -72,11 +74,29 @@ collections:
           - { label: "Note", value: "note" }
         default: "note"
       - { label: "Draft", name: "draft", widget: "boolean", default: false, required: false }
-      - { label: "Image", name: "coverImage", widget: "image", required: false }
-      - { label: "Image Alt", name: "coverImageAlt", widget: "string", required: false }
+      - { label: "Preview Image", name: "coverImage", widget: "image", required: false, hint: "This image peeks out while the note is collapsed." }
+      - { label: "Preview Image Alt", name: "coverImageAlt", widget: "string", required: false }
+      - label: "Additional Photos"
+        name: "images"
+        widget: "list"
+        required: false
+        summary: "{{fields.image}}"
+        hint: "Add as many photos as you want. These appear when the note is expanded."
+        fields:
+          - { label: "Photo", name: "image", widget: "image" }
+          - { label: "Alt Text", name: "alt", widget: "string", required: false }
+          - { label: "Caption", name: "caption", widget: "string", required: false }
       - { label: "Tags", name: "tags", widget: "list", required: false }
       - { label: "Bookmark URL", name: "externalUrl", widget: "string", required: false }
-      - { label: "Text", name: "body", widget: "markdown", required: false }
+      - label: "Text"
+        name: "body"
+        widget: "markdown"
+        required: false
+        editor_components:
+          - "superscript"
+          - "subscript"
+          - "image"
+          - "code-block"
 
   - name: "projects"
     label: "Projects"
@@ -99,7 +119,15 @@ collections:
       - { label: "Tags", name: "tags", widget: "list", required: false }
       - { label: "External URL", name: "externalUrl", widget: "string", required: false }
       - { label: "Author Note", name: "authorNote", widget: "text", required: false }
-      - { label: "Body", name: "body", widget: "markdown", required: false }
+      - label: "Body"
+        name: "body"
+        widget: "markdown"
+        required: false
+        editor_components:
+          - "superscript"
+          - "subscript"
+          - "image"
+          - "code-block"
 
   - name: "about"
     label: "About"

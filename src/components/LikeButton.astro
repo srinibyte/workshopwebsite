@@ -19,16 +19,6 @@ const { contentId } = Astro.props as Props;
 <script>
 	const endpoint = '/.netlify/functions/likes';
 
-	const getVisitorId = () => {
-		const storageKey = 'workshop:visitor-id';
-		let visitorId = window.localStorage.getItem(storageKey);
-		if (!visitorId) {
-			visitorId = window.crypto.randomUUID();
-			window.localStorage.setItem(storageKey, visitorId);
-		}
-		return visitorId;
-	};
-
 	const localLikeKey = (contentId: string) => `workshop:liked:${contentId}`;
 	const localCountKey = (contentId: string) => `workshop:likes:${contentId}`;
 
@@ -55,15 +45,14 @@ const { contentId } = Astro.props as Props;
 		const contentId = control.dataset.contentId;
 		if (!contentId) return;
 
-		const visitorId = getVisitorId();
 		const localLiked = window.localStorage.getItem(localLikeKey(contentId)) === 'true';
 		const localCount = Number.parseInt(window.localStorage.getItem(localCountKey(contentId)) || '0', 10);
 		applyState(control, localCount, localLiked);
 
 		try {
-			const response = await fetch(
-				`${endpoint}?id=${encodeURIComponent(contentId)}&visitor=${encodeURIComponent(visitorId)}`
-			);
+			const response = await fetch(`${endpoint}?id=${encodeURIComponent(contentId)}`, {
+				credentials: 'include'
+			});
 			if (!response.ok) throw new Error('Likes endpoint unavailable');
 			const data = await response.json();
 			window.localStorage.setItem(localCountKey(contentId), String(data.count));
@@ -84,7 +73,6 @@ const { contentId } = Astro.props as Props;
 			const contentId = control.dataset.contentId;
 			if (!contentId || button.disabled) return;
 
-			const visitorId = getVisitorId();
 			const countNode = control.querySelector('[data-like-count]');
 			const currentCount = Number.parseInt(countNode?.textContent || '0', 10);
 
@@ -96,8 +84,9 @@ const { contentId } = Astro.props as Props;
 			try {
 				const response = await fetch(endpoint, {
 					method: 'POST',
+					credentials: 'include',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ id: contentId, visitor: visitorId })
+					body: JSON.stringify({ id: contentId })
 				});
 				if (!response.ok) throw new Error('Like could not be saved');
 				const data = await response.json();

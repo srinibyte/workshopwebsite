@@ -30,6 +30,13 @@ const notes = defineCollection({
 		externalUrl: z.url().optional(),
 		coverImage: z.string().optional(),
 		coverImageAlt: z.string().optional(),
+		images: z.array(
+			z.object({
+				image: z.string(),
+				alt: z.string().optional(),
+				caption: z.string().optional()
+			})
+		).default([]),
 		notionId: z.string().optional(),
 		notionEditedTime: z.string().optional()
 	})
