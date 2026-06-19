@@ -44,6 +44,12 @@ const { contentId } = Astro.props as Props;
 		button.setAttribute('aria-label', liked ? 'Unlike this post' : 'Like this post');
 	};
 
+	const applyStateForContent = (contentId: string, count: number, liked: boolean) => {
+		for (const control of document.querySelectorAll(`[data-like-control][data-content-id="${CSS.escape(contentId)}"]`)) {
+			applyState(control, count, liked);
+		}
+	};
+
 	const setStatus = (control: Element, message: string) => {
 		const status = control.querySelector('[data-like-status]');
 		if (status instanceof HTMLElement) status.textContent = message;
@@ -65,7 +71,7 @@ const { contentId } = Astro.props as Props;
 			if (!response.ok) throw new Error('Likes endpoint unavailable');
 			const data = await response.json();
 			storeLocalState(contentId, data.count, Boolean(data.liked));
-			applyState(control, data.count, Boolean(data.liked));
+			applyStateForContent(contentId, data.count, Boolean(data.liked));
 		} catch {
 			// Local Astro development has no Netlify Functions runtime.
 		}
@@ -88,7 +94,7 @@ const { contentId } = Astro.props as Props;
 			const nextCount = clampCount(currentCount + (nextLiked ? 1 : -1));
 
 			button.disabled = true;
-			applyState(control, nextCount, nextLiked);
+			applyStateForContent(contentId, nextCount, nextLiked);
 			storeLocalState(contentId, nextCount, nextLiked);
 			setStatus(control, nextLiked ? 'Liked' : 'Like removed');
 
@@ -102,9 +108,9 @@ const { contentId } = Astro.props as Props;
 				if (!response.ok) throw new Error('Like could not be saved');
 				const data = await response.json();
 				storeLocalState(contentId, data.count, Boolean(data.liked));
-				applyState(control, data.count, Boolean(data.liked));
+				applyStateForContent(contentId, data.count, Boolean(data.liked));
 			} catch {
-				applyState(control, currentCount, currentlyLiked);
+				applyStateForContent(contentId, currentCount, currentlyLiked);
 				storeLocalState(contentId, currentCount, currentlyLiked);
 				setStatus(control, 'Like could not be saved.');
 			} finally {

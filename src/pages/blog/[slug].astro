@@ -56,5 +56,9 @@ const { Content } = await render(post);
 			</section>
 		) : null}
 
+		<footer class="post-like-footer">
+			<LikeButton contentId={`blog:${post.id}`} />
+		</footer>
+
 	</main>
 </BaseLayout>
