@@ -21,6 +21,16 @@ const { contentId } = Astro.props as Props;
 
 	const localLikeKey = (contentId: string) => `workshop:liked:${contentId}`;
 	const localCountKey = (contentId: string) => `workshop:likes:${contentId}`;
+	const clampCount = (count: number) => Math.max(0, count);
+
+	const storeLocalState = (contentId: string, count: number, liked: boolean) => {
+		window.localStorage.setItem(localCountKey(contentId), String(clampCount(count)));
+		if (liked) {
+			window.localStorage.setItem(localLikeKey(contentId), 'true');
+		} else {
+			window.localStorage.removeItem(localLikeKey(contentId));
+		}
+	};
 
 	const applyState = (control: Element, count: number, liked: boolean) => {
 		if (!(control instanceof HTMLElement)) return;
@@ -28,11 +38,10 @@ const { contentId } = Astro.props as Props;
 		const countNode = control.querySelector('[data-like-count]');
 		if (!(button instanceof HTMLButtonElement) || !(countNode instanceof HTMLElement)) return;
 
-		countNode.textContent = String(count);
+		countNode.textContent = String(clampCount(count));
 		button.classList.toggle('is-liked', liked);
 		button.setAttribute('aria-pressed', String(liked));
-		button.setAttribute('aria-label', liked ? 'You liked this post' : 'Like this post');
-		button.disabled = liked;
+		button.setAttribute('aria-label', liked ? 'Unlike this post' : 'Like this post');
 	};
 
 	const setStatus = (control: Element, message: string) => {
@@ -55,8 +64,7 @@ const { contentId } = Astro.props as Props;
 			});
 			if (!response.ok) throw new Error('Likes endpoint unavailable');
 			const data = await response.json();
-			window.localStorage.setItem(localCountKey(contentId), String(data.count));
-			if (data.liked) window.localStorage.setItem(localLikeKey(contentId), 'true');
+			storeLocalState(contentId, data.count, Boolean(data.liked));
 			applyState(control, data.count, Boolean(data.liked));
 		} catch {
 			// Local Astro development has no Netlify Functions runtime.
@@ -75,25 +83,32 @@ const { contentId } = Astro.props as Props;
 
 			const countNode = control.querySelector('[data-like-count]');
 			const currentCount = Number.parseInt(countNode?.textContent || '0', 10);
+			const currentlyLiked = button.getAttribute('aria-pressed') === 'true';
+			const nextLiked = !currentlyLiked;
+			const nextCount = clampCount(currentCount + (nextLiked ? 1 : -1));
 
-			applyState(control, currentCount + 1, true);
-			window.localStorage.setItem(localLikeKey(contentId), 'true');
-			window.localStorage.setItem(localCountKey(contentId), String(currentCount + 1));
-			setStatus(control, 'Liked');
+			button.disabled = true;
+			applyState(control, nextCount, nextLiked);
+			storeLocalState(contentId, nextCount, nextLiked);
+			setStatus(control, nextLiked ? 'Liked' : 'Like removed');
 
 			try {
 				const response = await fetch(endpoint, {
 					method: 'POST',
 					credentials: 'include',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ id: contentId })
+					body: JSON.stringify({ id: contentId, liked: nextLiked })
 				});
 				if (!response.ok) throw new Error('Like could not be saved');
 				const data = await response.json();
-				window.localStorage.setItem(localCountKey(contentId), String(data.count));
-				applyState(control, data.count, true);
+				storeLocalState(contentId, data.count, Boolean(data.liked));
+				applyState(control, data.count, Boolean(data.liked));
 			} catch {
-				setStatus(control, 'Liked locally; it will sync on the hosted site.');
+				applyState(control, currentCount, currentlyLiked);
+				storeLocalState(contentId, currentCount, currentlyLiked);
+				setStatus(control, 'Like could not be saved.');
+			} finally {
+				button.disabled = false;
 			}
 		});
 	}

@@ -73,19 +73,22 @@ export const handler = async (event) => {
 			return response(400, { error: 'Invalid JSON.' }, headers);
 		}
 
-		const { id: contentId } = payload;
+		const { id: contentId, liked = true } = payload;
 		if (!validPart(contentId, 180)) {
 			return response(400, { error: 'Invalid like request.' }, headers);
 		}
 
 		const key = `${contentId}/${visitor}`;
-		const existing = await store.get(key);
-		if (existing === null) {
+		if (liked === true) {
 			await store.setJSON(key, { createdAt: new Date().toISOString() });
+		} else if (liked === false) {
+			await store.delete(key);
+		} else {
+			return response(400, { error: 'Invalid like state.' }, headers);
 		}
 
 		const count = await countLikes(store, contentId);
-		return response(200, { count, liked: true }, headers);
+		return response(200, { count, liked }, headers);
 	}
 
 	return response(405, { error: 'Method not allowed.' }, headers);
