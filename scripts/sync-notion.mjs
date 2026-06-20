@@ -104,6 +104,16 @@ const slugify = (value) =>
 
 const yamlQuote = (value) => `"${String(value).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\r?\n/g, ' ')}"`;
 
+const escapeHtml = (value) =>
+	String(value)
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
+		.replace(/'/g, '&#39;');
+
+const escapeAttribute = (value) => escapeHtml(value).replace(/`/g, '&#96;');
+
 const textValue = (richText = []) =>
 	richText
 		.map((part) => {
@@ -122,6 +132,8 @@ const textValue = (richText = []) =>
 			return output;
 		})
 		.join('');
+
+const plainTextValue = (richText = []) => richText.map((part) => part.plain_text || '').join('');
 
 const getProperty = (properties, names) => {
 	for (const name of names) {
@@ -240,6 +252,162 @@ const downloadAsset = async (url, prefix, fallbackExt = '.jpg') => {
 
 const renderRichText = (richText = []) => textValue(richText).trim();
 
+const renderTableCell = (value) => {
+	const text = value?.text || '';
+	const url = value?.url || '';
+	if (url) {
+		return `<a href="${escapeAttribute(url)}">${escapeHtml(text || url)}</a>`;
+	}
+	return escapeHtml(text);
+};
+
+const renderInteractiveTable = ({ title = '', columns = [], rows = [] }) => {
+	if (!columns.length || !rows.length) return '';
+
+	const heading = title ? `<p class="notion-table-title">${escapeHtml(title)}</p>` : '';
+	const headers = columns
+		.map((column, index) => (
+			`<th scope="col"><button type="button" data-table-sort="${index}">${escapeHtml(column)}</button></th>`
+		))
+		.join('');
+	const body = rows
+		.map((row) => {
+			const searchText = row.map((cell) => cell?.text || '').join(' ').toLowerCase();
+			const cells = columns
+				.map((_, index) => {
+					const cell = row[index] || { text: '' };
+					return `<td data-sort-value="${escapeAttribute(cell.text || '')}">${renderTableCell(cell)}</td>`;
+				})
+				.join('');
+			return `<tr data-table-row data-search-text="${escapeAttribute(searchText)}">${cells}</tr>`;
+		})
+		.join('');
+
+	return `<section class="notion-table-block" data-notion-table>
+${heading}
+<div class="notion-table-tools">
+<label>
+<span>Filter table</span>
+<input type="search" placeholder="Type to filter rows" data-table-filter>
+</label>
+</div>
+<div class="notion-table-scroll">
+<table>
+<thead><tr>${headers}</tr></thead>
+<tbody>${body}</tbody>
+</table>
+</div>
+</section>`;
+};
+
+const databasePropertyValue = (property) => {
+	if (!property) return { text: '' };
+
+	switch (property.type) {
+		case 'string':
+			return { text: property.string || '' };
+		case 'boolean':
+			return { text: property.boolean ? 'Yes' : 'No' };
+		case 'title':
+			return { text: plainTextValue(property.title || []) };
+		case 'rich_text':
+			return { text: plainTextValue(property.rich_text || []) };
+		case 'number':
+			return { text: property.number === null || property.number === undefined ? '' : String(property.number) };
+		case 'select':
+			return { text: property.select?.name || '' };
+		case 'multi_select':
+			return { text: (property.multi_select || []).map((item) => item.name).filter(Boolean).join(', ') };
+		case 'status':
+			return { text: property.status?.name || '' };
+		case 'date': {
+			const start = property.date?.start || '';
+			const end = property.date?.end || '';
+			return { text: end ? `${start} - ${end}` : start };
+		}
+		case 'checkbox':
+			return { text: property.checkbox ? 'Yes' : 'No' };
+		case 'url':
+			return { text: property.url || '', url: property.url || '' };
+		case 'email':
+			return { text: property.email || '', url: property.email ? `mailto:${property.email}` : '' };
+		case 'phone_number':
+			return { text: property.phone_number || '' };
+		case 'unique_id': {
+			const prefix = property.unique_id?.prefix ? `${property.unique_id.prefix}-` : '';
+			return { text: property.unique_id?.number ? `${prefix}${property.unique_id.number}` : '' };
+		}
+		case 'people':
+			return { text: (property.people || []).map((person) => person.name || person.id).join(', ') };
+		case 'files':
+			return { text: (property.files || []).map((file) => file.name || getFileUrl(file)).filter(Boolean).join(', ') };
+		case 'relation':
+			return { text: (property.relation || []).map((item) => item.id).join(', ') };
+		case 'formula':
+			return databasePropertyValue(property.formula);
+		case 'rollup': {
+			const rollup = property.rollup;
+			if (!rollup) return { text: '' };
+			if (rollup.type === 'array') return { text: rollup.array.map((item) => databasePropertyValue(item).text).filter(Boolean).join(', ') };
+			return databasePropertyValue(rollup);
+		}
+		case 'created_time':
+			return { text: property.created_time || '' };
+		case 'last_edited_time':
+			return { text: property.last_edited_time || '' };
+		case 'created_by':
+			return { text: property.created_by?.name || property.created_by?.id || '' };
+		case 'last_edited_by':
+			return { text: property.last_edited_by?.name || property.last_edited_by?.id || '' };
+		default:
+			return { text: '' };
+	}
+};
+
+const renderChildDatabase = async (block) => {
+	const database = await notionRequest(`/databases/${block.id}`);
+	const pages = await fetchDatabasePages(block.id);
+	const columns = Object.entries(database.properties || {})
+		.filter(([, property]) => property.type !== 'created_by' && property.type !== 'last_edited_by')
+		.map(([name]) => name);
+	const rows = pages.map((page) => columns.map((column) => databasePropertyValue(page.properties[column])));
+
+	return renderInteractiveTable({
+		title: block.child_database?.title || database.title?.map((part) => part.plain_text || '').join('') || '',
+		columns,
+		rows
+	});
+};
+
+const loadTableRows = async (block, context) => {
+	const rows = [];
+	let cursor = null;
+
+	do {
+		const params = new URLSearchParams({ page_size: '100' });
+		if (cursor) params.set('start_cursor', cursor);
+		const data = await notionRequest(`/blocks/${block.id}/children?${params.toString()}`);
+		for (const child of data.results) {
+			if (child.type !== 'table_row') continue;
+			rows.push((child.table_row?.cells || []).map((cell) => ({ text: plainTextValue(cell || []) })));
+		}
+		cursor = data.has_more ? data.next_cursor : null;
+	} while (cursor);
+
+	const firstRow = rows[0] || [];
+	const hasHeader = Boolean(block.table?.has_column_header);
+	const columns = hasHeader
+		? firstRow.map((cell, index) => cell.text || `Column ${index + 1}`)
+		: firstRow.map((_, index) => `Column ${index + 1}`);
+	const bodyRows = hasHeader ? rows.slice(1) : rows;
+
+	return renderInteractiveTable({
+		title: '',
+		columns,
+		rows: bodyRows
+	});
+};
+
 const renderBlock = async (block, context, depth = 0) => {
 	const indent = '  '.repeat(depth);
 	const richText = block[block.type]?.rich_text || [];
@@ -284,6 +452,12 @@ const renderBlock = async (block, context, depth = 0) => {
 			);
 			return `![${alt}](${downloaded})${children ? `\n\n${children}` : ''}`;
 		}
+		case 'child_database':
+			return renderChildDatabase(block);
+		case 'table':
+			return loadTableRows(block, context);
+		case 'table_row':
+			return '';
 		case 'bookmark':
 		case 'embed':
 		case 'link_preview':

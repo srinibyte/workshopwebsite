@@ -18,7 +18,9 @@ const {
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="description" content={description} />
-		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<link rel="icon" href="/favicon.svg?v=3" type="image/svg+xml" />
+		<link rel="icon" href="/favicon-32.png?v=3" sizes="32x32" type="image/png" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=3" />
 		<title>{title}</title>
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -190,6 +192,63 @@ const {
 						? requestedFilter
 						: 'all';
 					update(initialFilter, currentQuery());
+				}
+
+				for (const table of document.querySelectorAll('[data-notion-table]')) {
+					const rows = [...table.querySelectorAll('[data-table-row]')];
+					const filter = table.querySelector('[data-table-filter]');
+					const sortButtons = [...table.querySelectorAll('[data-table-sort]')];
+					let currentSort = { index: -1, direction: 'asc' };
+
+					const applyTableFilter = () => {
+						if (!(filter instanceof HTMLInputElement)) return;
+						const query = filter.value.trim().toLowerCase();
+						for (const row of rows) {
+							const searchText = row.getAttribute('data-search-text') || '';
+							row.hidden = Boolean(query) && !searchText.includes(query);
+						}
+					};
+
+					const sortRows = (index) => {
+						const tbody = table.querySelector('tbody');
+						if (!(tbody instanceof HTMLTableSectionElement)) return;
+						const direction =
+							currentSort.index === index && currentSort.direction === 'asc'
+								? 'desc'
+								: 'asc';
+						currentSort = { index, direction };
+
+						for (const button of sortButtons) {
+							const active = Number(button.getAttribute('data-table-sort')) === index;
+							button.setAttribute('aria-sort', active ? direction : 'none');
+						}
+
+						const sorted = [...rows].sort((a, b) => {
+							const aValue = a.children[index]?.getAttribute('data-sort-value') || '';
+							const bValue = b.children[index]?.getAttribute('data-sort-value') || '';
+							const aNumber = Number(aValue.replace(/,/g, ''));
+							const bNumber = Number(bValue.replace(/,/g, ''));
+							const bothNumeric = aValue.trim() !== '' && bValue.trim() !== '' && Number.isFinite(aNumber) && Number.isFinite(bNumber);
+							const result = bothNumeric
+								? aNumber - bNumber
+								: aValue.localeCompare(bValue, undefined, { numeric: true, sensitivity: 'base' });
+							return direction === 'asc' ? result : -result;
+						});
+
+						for (const row of sorted) tbody.append(row);
+						applyTableFilter();
+					};
+
+					if (filter instanceof HTMLInputElement) {
+						filter.addEventListener('input', applyTableFilter);
+					}
+
+					for (const button of sortButtons) {
+						button.setAttribute('aria-sort', 'none');
+						button.addEventListener('click', () => {
+							sortRows(Number(button.getAttribute('data-table-sort') || 0));
+						});
+					}
 				}
 
 				const followLabels = [...document.querySelectorAll('[data-follow-label]')];
