@@ -12,7 +12,7 @@ const posts: CollectionEntry<'blog'>[] = (await getCollection('blog'))
 const tags = [...new Set(posts.flatMap((post: CollectionEntry<'blog'>) => post.data.tags))];
 ---
 
-<BaseLayout title="Blog - Prahlad Srinivasan" description="Blog posts by Prahlad Srinivasan.">
+<BaseLayout title="Blog - prahlad's workshop" description="Blog posts by Prahlad Srinivasan.">
 	<main class="content-page">
 		<header class="page-top blog-top">
 			<div>

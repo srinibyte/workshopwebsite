@@ -169,6 +169,21 @@ const getStatus = (page) => {
 	return prop?.select?.name || 'active';
 };
 
+const shouldPublish = (page) => {
+	if (getCheckbox(page, ['Draft', 'draft'])) return false;
+
+	const published = getProperty(page.properties, ['Published', 'published']);
+	if (published?.type === 'checkbox') return Boolean(published.checkbox);
+
+	const status = getProperty(page.properties, ['Status', 'status']);
+	if (status?.type === 'status' || status?.type === 'select') {
+		const value = (status.status?.name || status.select?.name || '').toLowerCase();
+		return ['published', 'live', 'public'].includes(value);
+	}
+
+	return false;
+};
+
 const getNoteKind = (page) => {
 	const prop = getProperty(page.properties, ['Type', 'Kind', 'type', 'kind']);
 	const value = prop?.select?.name?.toLowerCase();
@@ -354,8 +369,11 @@ const writeCollection = async (source) => {
 		(a, b) => new Date(getDate(b)).valueOf() - new Date(getDate(a)).valueOf()
 	);
 	const keptFiles = new Set();
+	let syncedCount = 0;
 
 	for (const page of pages) {
+		if (!shouldPublish(page)) continue;
+
 		const title = getTitle(page);
 		const slug = getSlug(page, title);
 		const date = getDate(page);
@@ -426,6 +444,7 @@ const writeCollection = async (source) => {
 		const content = `${buildFrontmatter(frontmatter)}\n\n${body.trim()}\n`;
 		await writeFile(filePath, content);
 		keptFiles.add(filePath);
+		syncedCount += 1;
 	}
 
 	if (prune) {
@@ -445,7 +464,7 @@ const writeCollection = async (source) => {
 		}
 	}
 
-	console.log(`[notion] synced ${source.collection}: ${pages.length} entries${prune ? ' (pruned)' : ''}`);
+	console.log(`[notion] synced ${source.collection}: ${syncedCount}/${pages.length} published entries${prune ? ' (pruned)' : ''}`);
 };
 
 for (const source of enabledSources) {
