@@ -1220,6 +1220,63 @@ input {
 	vertical-align: super;
 }
 
+.prose .footnote-ref {
+	margin-left: 0.12em;
+	font-family: 'Satoshi', 'Inter', system-ui, sans-serif;
+	font-size: 0.68em;
+	font-weight: 700;
+	line-height: 0;
+}
+
+.prose .footnote-ref a {
+	text-decoration: none;
+	border-bottom: 1px solid currentColor;
+}
+
+.prose .references {
+	margin-top: 3.25rem;
+	padding-top: 1.35rem;
+	border-top: 1px solid color-mix(in srgb, var(--ink) 18%, transparent 82%);
+	font-family: 'Satoshi', 'Inter', system-ui, sans-serif;
+	font-size: 0.9rem;
+	line-height: 1.55;
+	color: var(--muted);
+}
+
+.prose .references h3 {
+	margin: 0 0 1rem;
+	font-family: 'Satoshi', 'Inter', system-ui, sans-serif;
+	font-size: 0.82rem;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--ink);
+}
+
+.prose .references ol {
+	display: grid;
+	gap: 0.72rem;
+	margin: 0;
+	padding-left: 1.35rem;
+}
+
+.prose .references li {
+	max-width: 100%;
+	padding-left: 0.2rem;
+	overflow-wrap: anywhere;
+}
+
+.prose .references a {
+	color: color-mix(in srgb, var(--ink) 82%, var(--muted) 18%);
+	text-decoration-thickness: 1px;
+}
+
+.prose .references .footnote-back {
+	margin-left: 0.35rem;
+	color: var(--muted);
+	text-decoration: none;
+}
+
 .prose hr {
 	margin: 2.8rem 0;
 	border: 0;
