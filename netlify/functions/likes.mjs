@@ -18,9 +18,21 @@ const validPart = (value, maxLength) =>
 	value.length <= maxLength &&
 	/^[a-zA-Z0-9:_-]+$/.test(value);
 
-const countLikes = async (store, contentId) => {
-	const { blobs } = await store.list({ prefix: `${contentId}/` });
-	return blobs.length;
+const likeKey = (contentId, visitor) => `likes/${contentId}/${visitor}`;
+const countKey = (contentId) => `counts/${contentId}`;
+
+const readCount = async (store, contentId) => {
+	const value = await store.get(countKey(contentId), { type: 'json' });
+	return Number.isInteger(value?.count) && value.count > 0 ? value.count : 0;
+};
+
+const writeCount = async (store, contentId, count) => {
+	const safeCount = Math.max(0, count);
+	await store.setJSON(countKey(contentId), {
+		count: safeCount,
+		updatedAt: new Date().toISOString()
+	});
+	return safeCount;
 };
 
 const parseCookies = (cookieHeader = '') =>
@@ -60,8 +72,8 @@ export const handler = async (event) => {
 			return response(400, { error: 'Invalid like request.' }, headers);
 		}
 
-		const liked = (await store.get(`${contentId}/${visitor}`)) !== null;
-		const count = await countLikes(store, contentId);
+		const liked = (await store.get(likeKey(contentId, visitor))) !== null;
+		const count = await readCount(store, contentId);
 		return response(200, { count, liked }, headers);
 	}
 
@@ -78,16 +90,24 @@ export const handler = async (event) => {
 			return response(400, { error: 'Invalid like request.' }, headers);
 		}
 
-		const key = `${contentId}/${visitor}`;
+		const key = likeKey(contentId, visitor);
+		const existing = await store.get(key);
+		let count = await readCount(store, contentId);
+
 		if (liked === true) {
-			await store.setJSON(key, { createdAt: new Date().toISOString() });
+			if (existing === null) {
+				await store.setJSON(key, { createdAt: new Date().toISOString() });
+				count = await writeCount(store, contentId, count + 1);
+			}
 		} else if (liked === false) {
-			await store.delete(key);
+			if (existing !== null) {
+				await store.delete(key);
+				count = await writeCount(store, contentId, count - 1);
+			}
 		} else {
 			return response(400, { error: 'Invalid like state.' }, headers);
 		}
 
-		const count = await countLikes(store, contentId);
 		return response(200, { count, liked }, headers);
 	}
 

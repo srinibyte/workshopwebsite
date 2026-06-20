@@ -45,7 +45,8 @@ const { contentId } = Astro.props as Props;
 	};
 
 	const applyStateForContent = (contentId: string, count: number, liked: boolean) => {
-		for (const control of document.querySelectorAll(`[data-like-control][data-content-id="${CSS.escape(contentId)}"]`)) {
+		for (const control of document.querySelectorAll('[data-like-control]')) {
+			if (!(control instanceof HTMLElement) || control.dataset.contentId !== contentId) continue;
 			applyState(control, count, liked);
 		}
 	};
@@ -78,6 +79,9 @@ const { contentId } = Astro.props as Props;
 	};
 
 	for (const control of document.querySelectorAll('[data-like-control]')) {
+		if (control instanceof HTMLElement && control.dataset.likeReady === 'true') continue;
+		if (control instanceof HTMLElement) control.dataset.likeReady = 'true';
+
 		void loadLike(control);
 
 		const button = control.querySelector('.like-button');
