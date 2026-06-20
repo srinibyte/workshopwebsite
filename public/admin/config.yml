@@ -11,7 +11,7 @@ public_folder: "/uploads"
 
 site_url: "https://prahlad-workshop-site.netlify.app"
 display_url: "https://prahlad-workshop-site.netlify.app"
-logo_url: "/favicon.svg"
+logo_url: "/favicon.png"
 
 slug:
   encoding: "ascii"
