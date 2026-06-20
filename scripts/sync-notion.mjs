@@ -1,13 +1,34 @@
-import { mkdir, readdir, rm, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const contentRoot = join(root, 'src', 'content');
 const uploadRoot = join(root, 'public', 'uploads', 'notion');
+const envPath = join(root, '.env');
+const loadLocalEnv = async () => {
+	try {
+		const env = await readFile(envPath, 'utf8');
+		for (const line of env.split(/\r?\n/)) {
+			const trimmed = line.trim();
+			if (!trimmed || trimmed.startsWith('#')) continue;
+			const separatorIndex = trimmed.indexOf('=');
+			if (separatorIndex === -1) continue;
+			const key = trimmed.slice(0, separatorIndex).trim();
+			const value = trimmed.slice(separatorIndex + 1).trim().replace(/^['"]|['"]$/g, '');
+			if (key && process.env[key] === undefined) process.env[key] = value;
+		}
+	} catch {
+		// .env is optional; Netlify/GitHub should provide real secrets via environment variables.
+	}
+};
+
+await loadLocalEnv();
+
 const notionToken = process.env.NOTION_TOKEN;
 const notionVersion = process.env.NOTION_VERSION || '2022-06-28';
 const prune = process.argv.includes('--prune');
+const optional = process.argv.includes('--optional');
 
 const sources = [
 	{
@@ -30,14 +51,28 @@ const sources = [
 	}
 ];
 
+if (!notionToken && optional) {
+	console.log('[notion] NOTION_TOKEN not set; skipping optional Notion sync');
+	process.exit(0);
+}
+
 if (!notionToken) {
 	throw new Error('NOTION_TOKEN is required.');
 }
 
+const enabledSources = [];
+
 for (const source of sources) {
 	if (!source.databaseId) {
-		throw new Error(`Missing database ID for ${source.collection}. Set NOTION_${source.collection.toUpperCase()}_DATABASE_ID.`);
+		const message = `Missing database ID for ${source.collection}. Set NOTION_${source.collection.toUpperCase()}_DATABASE_ID.`;
+		if (optional) {
+			console.log(`[notion] ${message} Skipping ${source.collection}.`);
+			continue;
+		}
+		throw new Error(message);
 	}
+
+	enabledSources.push(source);
 }
 
 const notionRequest = async (path, options = {}) => {
@@ -145,10 +180,21 @@ const getUrl = (page) => {
 	return prop?.url || '';
 };
 
+const getFiles = (page, names) => {
+	const prop = getProperty(page.properties, names);
+	return prop?.files || [];
+};
+
 const getFileUrl = (file) => {
 	if (!file) return '';
 	if (file.type === 'external') return file.external?.url || '';
 	return file.file?.url || '';
+};
+
+const getPageCoverUrl = (page) => {
+	if (!page.cover) return '';
+	if (page.cover.type === 'external') return page.cover.external?.url || '';
+	return page.cover.file?.url || '';
 };
 
 const downloadAsset = async (url, prefix, fallbackExt = '.jpg') => {
@@ -256,8 +302,7 @@ const fetchDatabasePages = async (databaseId) => {
 
 	do {
 		const payload = {
-			page_size: 100,
-			sorts: [{ property: 'Date', direction: 'descending' }]
+			page_size: 100
 		};
 		if (cursor) payload.start_cursor = cursor;
 		const data = await notionRequest(`/databases/${databaseId}/query`, {
@@ -305,7 +350,9 @@ const buildFrontmatter = (fields) => {
 
 const writeCollection = async (source) => {
 	await mkdir(source.folder, { recursive: true });
-	const pages = await fetchDatabasePages(source.databaseId);
+	const pages = (await fetchDatabasePages(source.databaseId)).sort(
+		(a, b) => new Date(getDate(b)).valueOf() - new Date(getDate(a)).valueOf()
+	);
 	const keptFiles = new Set();
 
 	for (const page of pages) {
@@ -316,8 +363,13 @@ const writeCollection = async (source) => {
 		const notionEditedTime = getEditedTime(page);
 		const draft = getCheckbox(page, ['Draft', 'draft']);
 		const tags = getTags(page);
-		const coverFile = getProperty(page.properties, ['Cover Image', 'coverImage'])?.files?.[0];
-		const coverImage = coverFile ? await downloadAsset(getFileUrl(coverFile), `${source.collection}-${slug}-cover`) : '';
+		const coverFile = getFiles(page, ['Cover Image', 'coverImage'])?.[0];
+		const pageCoverUrl = getPageCoverUrl(page);
+		const coverImage = coverFile
+			? await downloadAsset(getFileUrl(coverFile), `${source.collection}-${slug}-cover`)
+			: pageCoverUrl
+				? await downloadAsset(pageCoverUrl, `${source.collection}-${slug}-cover`)
+				: '';
 		const coverImageAlt =
 			getText(page, ['Cover Image Alt', 'coverImageAlt']) ||
 			coverFile?.name ||
@@ -354,6 +406,18 @@ const writeCollection = async (source) => {
 		if (source.kind === 'notes') {
 			frontmatter.kind = getNoteKind(page);
 			frontmatter.summary = getText(page, ['Summary', 'summary']) || title;
+			const images = [];
+			const additionalPhotos = getFiles(page, ['Additional Photos', 'Photos', 'Images', 'images']);
+			for (const [index, photo] of additionalPhotos.entries()) {
+				const image = await downloadAsset(getFileUrl(photo), `${source.collection}-${slug}-photo-${index + 1}`);
+				if (image) {
+					images.push({
+						image,
+						alt: photo.name || title
+					});
+				}
+			}
+			if (images.length) frontmatter.images = images;
 			const externalUrl = getUrl(page);
 			if (externalUrl) frontmatter.externalUrl = externalUrl;
 		}
@@ -384,7 +448,7 @@ const writeCollection = async (source) => {
 	console.log(`[notion] synced ${source.collection}: ${pages.length} entries${prune ? ' (pruned)' : ''}`);
 };
 
-for (const source of sources) {
+for (const source of enabledSources) {
 	await writeCollection(source);
 }
 

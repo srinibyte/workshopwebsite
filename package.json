@@ -6,7 +6,7 @@
 	"scripts": {
 		"dev": "astro dev",
 		"dev:local": "astro dev --host localhost --port 4321",
-		"build": "npm run images:optimize && astro build",
+		"build": "npm run notion:pull:optional && npm run images:optimize && astro build",
 		"preview": "astro preview",
 		"prepare": "astro sync || echo ''",
 		"check": "astro check",
@@ -14,6 +14,7 @@
 		"images:optimize": "node scripts/optimize-uploads.mjs",
 		"admin:proxy": "npx decap-server",
 		"notion:pull": "node scripts/sync-notion.mjs",
+		"notion:pull:optional": "node scripts/sync-notion.mjs --optional",
 		"notion:pull:prune": "node scripts/sync-notion.mjs --prune",
 		"notion:watch": "node scripts/watch-notion.mjs"
 	},
