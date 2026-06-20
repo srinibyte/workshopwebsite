@@ -1,6 +1,23 @@
 import { connectLambda, getStore } from '@netlify/blobs';
 
 const visitorCookie = 'workshop_like_visitor';
+const storeName = 'workshop-likes';
+
+const getLikesStore = (event) => {
+	const token = process.env.NETLIFY_BLOBS_TOKEN || process.env.NETLIFY_AUTH_TOKEN;
+	const siteID = process.env.SITE_ID || process.env.NETLIFY_SITE_ID;
+
+	if (token && siteID) {
+		return getStore({
+			name: storeName,
+			siteID,
+			token
+		});
+	}
+
+	connectLambda(event);
+	return getStore(storeName);
+};
 
 const response = (statusCode, body, headers = {}) => ({
 	statusCode,
@@ -61,8 +78,7 @@ const visitorHeaders = (visitor, created) => {
 };
 
 export const handler = async (event) => {
-	connectLambda(event);
-	const store = getStore('workshop-likes');
+	const store = getLikesStore(event);
 	const { visitor, created } = getVisitor(event);
 	const headers = visitorHeaders(visitor, created);
 
