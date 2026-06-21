@@ -9,8 +9,8 @@ backend:
 media_folder: "public/uploads"
 public_folder: "/uploads"
 
-site_url: "https://prahlad-workshop-site.netlify.app"
-display_url: "https://prahlad-workshop-site.netlify.app"
+site_url: "https://prahladsrini.com"
+display_url: "https://prahladsrini.com"
 logo_url: "/favicon.png"
 
 slug:
