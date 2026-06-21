@@ -114,6 +114,18 @@ const escapeHtml = (value) =>
 
 const escapeAttribute = (value) => escapeHtml(value).replace(/`/g, '&#96;');
 
+const preserveLineBreaks = (value, transform) =>
+	String(value)
+		.split(/(\r?\n+)/)
+		.map((part) => (/^\r?\n+$/.test(part) || part === '' ? part : transform(part)))
+		.join('');
+
+const wrapInlineMarkdown = (value, transform) =>
+	preserveLineBreaks(value, (part) => {
+		const [, leading = '', core = '', trailing = ''] = part.match(/^(\s*)(.*?)(\s*)$/s) || [];
+		return core ? `${leading}${transform(core)}${trailing}` : part;
+	});
+
 const textValue = (richText = []) =>
 	richText
 		.map((part) => {
@@ -122,12 +134,12 @@ const textValue = (richText = []) =>
 			const annotations = part.annotations || {};
 			let output = text;
 
-			if (annotations.code) output = `\`${output}\``;
-			if (annotations.bold) output = `**${output}**`;
-			if (annotations.italic) output = `*${output}*`;
-			if (annotations.strikethrough) output = `~~${output}~~`;
-			if (annotations.underline) output = `<u>${output}</u>`;
-			if (href) output = `[${output}](${href})`;
+			if (annotations.code) output = wrapInlineMarkdown(output, (value) => `\`${value}\``);
+			if (annotations.bold) output = wrapInlineMarkdown(output, (value) => `**${value}**`);
+			if (annotations.italic) output = wrapInlineMarkdown(output, (value) => `*${value}*`);
+			if (annotations.strikethrough) output = wrapInlineMarkdown(output, (value) => `~~${value}~~`);
+			if (annotations.underline) output = wrapInlineMarkdown(output, (value) => `<u>${value}</u>`);
+			if (href) output = wrapInlineMarkdown(output, (value) => `[${value}](${href})`);
 
 			return output;
 		})
@@ -182,7 +194,8 @@ const getStatus = (page) => {
 };
 
 const shouldPublish = (page) => {
-	if (getCheckbox(page, ['Draft', 'draft'])) return false;
+	const draftProperty = getProperty(page.properties, ['Draft', 'draft']);
+	if (draftProperty?.type === 'checkbox' && draftProperty.checkbox) return false;
 
 	const published = getProperty(page.properties, ['Published', 'published']);
 	if (published?.type === 'checkbox') return Boolean(published.checkbox);
@@ -192,6 +205,8 @@ const shouldPublish = (page) => {
 		const value = (status.status?.name || status.select?.name || '').toLowerCase();
 		return ['published', 'live', 'public'].includes(value);
 	}
+
+	if (draftProperty?.type === 'checkbox') return !draftProperty.checkbox;
 
 	return false;
 };
