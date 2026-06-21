@@ -138,10 +138,15 @@ const {
 					clickTone();
 				});
 
-				const filterGroups = [...document.querySelectorAll('[data-filter-group]')];
-				for (const group of filterGroups) {
-					const buttons = [...group.querySelectorAll('[data-filter-value]')];
-					const targetName = group.getAttribute('data-filter-group');
+				const searchGroupNames = new Set(
+					[...document.querySelectorAll('[data-filter-group], [data-search-group]')]
+						.map((node) => node.getAttribute('data-filter-group') || node.getAttribute('data-search-group'))
+						.filter(Boolean)
+				);
+
+				for (const targetName of searchGroupNames) {
+					const group = document.querySelector(`[data-filter-group="${targetName}"]`);
+					const buttons = group ? [...group.querySelectorAll('[data-filter-value]')] : [];
 					if (!targetName) continue;
 					const searchInput = document.querySelector(`[data-search-group="${targetName}"]`);
 
@@ -150,17 +155,21 @@ const {
 					];
 
 					const update = (value, query) => {
+						const normalizedValue = value.trim().toLowerCase();
 						for (const button of buttons) {
 							button.classList.toggle(
 								'is-active',
-								button.getAttribute('data-filter-value') === value
+								(button.getAttribute('data-filter-value') || '').trim().toLowerCase() === normalizedValue
 							);
 						}
 
 						for (const item of items) {
-							const tags = item.getAttribute('data-tags') || '';
+							const tags = (item.getAttribute('data-tags') || '')
+								.split(',')
+								.map((tag) => tag.trim().toLowerCase())
+								.filter(Boolean);
 							const searchText = (item.getAttribute('data-search-text') || '').toLowerCase();
-							const matchesTag = value === 'all' || tags.split(',').includes(value);
+							const matchesTag = !buttons.length || normalizedValue === 'all' || tags.includes(normalizedValue);
 							const matchesQuery = !query || searchText.includes(query);
 							item.hidden = !(matchesTag && matchesQuery);
 						}

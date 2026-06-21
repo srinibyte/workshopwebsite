@@ -10,6 +10,19 @@ const posts: CollectionEntry<'blog'>[] = (await getCollection('blog'))
 		b.data.date.valueOf() - a.data.date.valueOf()
 );
 const tags = [...new Set(posts.flatMap((post: CollectionEntry<'blog'>) => post.data.tags))];
+
+const searchTextForPost = (post: CollectionEntry<'blog'>) =>
+	[
+		post.data.title,
+		post.data.description,
+		...post.data.tags,
+		post.body
+			.replace(/<[^>]*>/g, ' ')
+			.replace(/[^\p{L}\p{N}\s'-]/gu, ' ')
+	]
+		.join(' ')
+		.replace(/\s+/g, ' ')
+		.toLowerCase();
 ---
 
 <BaseLayout title="Blog - prahlad's workshop" description="Blog posts by Prahlad Srinivasan.">
@@ -51,7 +64,7 @@ const tags = [...new Set(posts.flatMap((post: CollectionEntry<'blog'>) => post.d
 					data-clicky
 					data-filter-target="blog"
 					data-tags={post.data.tags.join(',')}
-					data-search-text={[post.data.title, post.data.description, ...post.data.tags].join(' ').toLowerCase()}
+					data-search-text={searchTextForPost(post)}
 				>
 					<div class="blog-list-card-copy">
 						<time>{formatDate(post.data.date)}</time>
