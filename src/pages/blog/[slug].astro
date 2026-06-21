@@ -35,16 +35,6 @@ const { Content } = await render(post);
 			</div>
 		</header>
 
-		{post.data.coverImage ? (
-			<figure class="post-cover">
-				<img
-					src={post.data.coverImage}
-					alt={post.data.coverImageAlt || post.data.title}
-					loading="eager"
-				/>
-			</figure>
-		) : null}
-
 		<article class="prose">
 			<Content />
 		</article>

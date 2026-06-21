@@ -159,7 +159,17 @@ Projects database:
 
 The body of each Notion page becomes the Markdown body. Supported Notion blocks
 include paragraphs, headings, bullets, numbered lists, quotes, to-dos, code,
-dividers, callouts, images, bookmarks, embeds, and link previews.
+dividers, callouts, images, bookmarks, embeds, link previews, tables, and inline
+databases. Blog cover images are used for thumbnails/listing cards only; images
+that should appear inside the opened post should be inserted into the Notion
+page body.
+
+Publishing rules:
+
+- If `Published` exists, it must be checked.
+- If `Status` exists, it must be `Published`, `Live`, or `Public`.
+- If neither exists and `Draft` exists, `Draft` must be unchecked.
+- `Draft` always wins: checked draft rows never publish.
 
 ### Local Notion Editing
 

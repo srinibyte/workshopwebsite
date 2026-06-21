@@ -147,6 +147,41 @@ const textValue = (richText = []) =>
 
 const plainTextValue = (richText = []) => richText.map((part) => part.plain_text || '').join('');
 
+const annotatedHtml = (part, value) => {
+	const href = part.href || part.text?.link?.url;
+	const annotations = part.annotations || {};
+	const lines = escapeHtml(value || '').replace(/\r?\n/g, '<br>');
+	let output = lines;
+
+	if (annotations.code) output = `<code>${output}</code>`;
+	if (annotations.bold) output = `<strong>${output}</strong>`;
+	if (annotations.italic) output = `<em>${output}</em>`;
+	if (annotations.strikethrough) output = `<s>${output}</s>`;
+	if (annotations.underline) output = `<u>${output}</u>`;
+	if (href) output = `<a href="${escapeAttribute(href)}">${output}</a>`;
+
+	return output;
+};
+
+const htmlTextValue = (richText = []) =>
+	richText.map((part) => annotatedHtml(part, part.plain_text || '')).join('');
+
+const htmlTextSegments = (richText = []) => {
+	const segments = [''];
+
+	for (const part of richText) {
+		const pieces = String(part.plain_text || '').split(/(?:\r?\n\s*){2,}/);
+		for (const [index, piece] of pieces.entries()) {
+			if (index > 0) segments.push('');
+			if (piece) {
+				segments[segments.length - 1] += annotatedHtml(part, piece);
+			}
+		}
+	}
+
+	return segments.map((segment) => segment.trim()).filter(Boolean);
+};
+
 const getProperty = (properties, names) => {
 	for (const name of names) {
 		if (properties[name]) return properties[name];
@@ -157,12 +192,12 @@ const getProperty = (properties, names) => {
 
 const getTitle = (page) => {
 	const titleProperty = Object.values(page.properties).find((property) => property.type === 'title');
-	return textValue(titleProperty?.title || []) || 'Untitled';
+	return plainTextValue(titleProperty?.title || []) || 'Untitled';
 };
 
 const getSlug = (page, fallbackTitle) => {
 	const prop = getProperty(page.properties, ['Slug', 'slug']);
-	const explicit = prop?.rich_text?.length ? textValue(prop.rich_text) : '';
+	const explicit = prop?.rich_text?.length ? plainTextValue(prop.rich_text) : '';
 	return slugify(explicit || fallbackTitle);
 };
 
@@ -180,7 +215,7 @@ const getCheckbox = (page, names) => {
 
 const getText = (page, names) => {
 	const prop = getProperty(page.properties, names);
-	return textValue(prop?.rich_text || []);
+	return plainTextValue(prop?.rich_text || []);
 };
 
 const getTags = (page) => {
@@ -265,7 +300,32 @@ const downloadAsset = async (url, prefix, fallbackExt = '.jpg') => {
 	return `/uploads/notion/${filename}`;
 };
 
-const renderRichText = (richText = []) => textValue(richText).trim();
+const renderRichText = (richText = []) => htmlTextValue(richText).trim();
+
+const renderParagraphSegments = (segments) => {
+	if (!segments.length) return '';
+
+	return segments
+		.map((chunk) => {
+			const quoteMarker = chunk.match(/^((?:<(?:a|em|strong|u|s|code)\b[^>]*>)*)&gt;\s*/);
+			if (quoteMarker) {
+				return `<blockquote><p>${quoteMarker[1]}${chunk.slice(quoteMarker[0].length)}</p></blockquote>`;
+			}
+
+			const numbered = chunk.match(/^(\d+)\.\s+(.+)$/s);
+			if (numbered) {
+				return `<ol start="${escapeAttribute(numbered[1])}"><li>${numbered[2]}</li></ol>`;
+			}
+
+			const bullet = chunk.match(/^[-*]\s+(.+)$/s);
+			if (bullet) {
+				return `<ul><li>${bullet[1]}</li></ul>`;
+			}
+
+			return `<p>${chunk}</p>`;
+		})
+		.join('\n\n');
+};
 
 const renderTableCell = (value) => {
 	const text = value?.text || '';
@@ -424,48 +484,49 @@ const loadTableRows = async (block, context) => {
 };
 
 const renderBlock = async (block, context, depth = 0) => {
-	const indent = '  '.repeat(depth);
 	const richText = block[block.type]?.rich_text || [];
 	const text = renderRichText(richText);
+	const textSegments = block.type === 'paragraph' ? htmlTextSegments(richText) : [];
 	const children = block.has_children ? await loadChildren(block.id, context, depth + 1) : '';
 
 	switch (block.type) {
 		case 'paragraph':
-			return [text, children].filter(Boolean).join('\n\n');
+			return [renderParagraphSegments(textSegments), children].filter(Boolean).join('\n\n');
 		case 'heading_1':
-			return `# ${text}${children ? `\n\n${children}` : ''}`;
+			return `<h2>${text}</h2>${children ? `\n\n${children}` : ''}`;
 		case 'heading_2':
-			return `## ${text}${children ? `\n\n${children}` : ''}`;
+			return `<h3>${text}</h3>${children ? `\n\n${children}` : ''}`;
 		case 'heading_3':
-			return `### ${text}${children ? `\n\n${children}` : ''}`;
+			return `<h4>${text}</h4>${children ? `\n\n${children}` : ''}`;
 		case 'bulleted_list_item':
-			return `${indent}- ${text}${children ? `\n${children}` : ''}`;
+			return `<ul><li>${text}${children ? `\n${children}` : ''}</li></ul>`;
 		case 'numbered_list_item':
-			return `${indent}1. ${text}${children ? `\n${children}` : ''}`;
+			return `<ol><li>${text}${children ? `\n${children}` : ''}</li></ol>`;
 		case 'quote':
-			return `> ${text}${children ? `\n${children}` : ''}`;
+			return `<blockquote><p>${text}</p>${children || ''}</blockquote>`;
 		case 'to_do':
-			return `${indent}- [${block.to_do.checked ? 'x' : ' '}] ${text}${children ? `\n${children}` : ''}`;
+			return `<ul class="notion-todos"><li><input type="checkbox" disabled${block.to_do.checked ? ' checked' : ''}> <span>${text}</span>${children ? `\n${children}` : ''}</li></ul>`;
 		case 'code': {
 			const language = block.code.language || '';
-			return `\`\`\`${language}\n${block.code.rich_text?.map((part) => part.plain_text || '').join('') || ''}\n\`\`\`${children ? `\n\n${children}` : ''}`;
+			const code = escapeHtml(block.code.rich_text?.map((part) => part.plain_text || '').join('') || '');
+			return `<pre><code data-language="${escapeAttribute(language)}">${code}</code></pre>${children ? `\n\n${children}` : ''}`;
 		}
 		case 'divider':
-			return `---${children ? `\n\n${children}` : ''}`;
+			return `<hr>${children ? `\n\n${children}` : ''}`;
 		case 'callout': {
-			const emoji = block.callout.icon?.emoji || 'Note';
-			return `> ${emoji} ${text}${children ? `\n${children}` : ''}`;
+			const emoji = block.callout.icon?.emoji || '';
+			return `<aside class="notion-callout">${emoji ? `<span aria-hidden="true">${escapeHtml(emoji)}</span>` : ''}<div>${text ? `<p>${text}</p>` : ''}${children || ''}</div></aside>`;
 		}
 		case 'image': {
 			const caption = renderRichText(block.image.caption || []);
-			const alt = caption || block.image.alt || 'Image';
+			const alt = plainTextValue(block.image.caption || []) || block.image.alt || 'Image';
 			const imageUrl = block.image.type === 'external' ? block.image.external.url : block.image.file.url;
 			const downloaded = await downloadAsset(
 				imageUrl,
 				`${context.slug}-${block.id}`,
 				extname(new URL(imageUrl).pathname) || '.jpg'
 			);
-			return `![${alt}](${downloaded})${children ? `\n\n${children}` : ''}`;
+			return `<figure><img src="${escapeAttribute(downloaded)}" alt="${escapeAttribute(alt)}" loading="lazy">${caption ? `<figcaption>${caption}</figcaption>` : ''}</figure>${children ? `\n\n${children}` : ''}`;
 		}
 		case 'child_database':
 			return renderChildDatabase(block);
@@ -476,9 +537,23 @@ const renderBlock = async (block, context, depth = 0) => {
 		case 'bookmark':
 		case 'embed':
 		case 'link_preview':
-			return block[block.type]?.url ? `[${block[block.type].url}](${block[block.type].url})` : '';
+			return block[block.type]?.url ? `<p><a href="${escapeAttribute(block[block.type].url)}">${escapeHtml(block[block.type].url)}</a></p>` : '';
+		case 'toggle':
+			return `<details class="notion-toggle"><summary>${text || 'Toggle'}</summary>${children || ''}</details>`;
+		case 'column_list':
+			return children ? `<div class="notion-columns">${children}</div>` : '';
+		case 'column':
+			return children ? `<div class="notion-column">${children}</div>` : '';
+		case 'file':
+		case 'pdf':
+		case 'video': {
+			const file = block[block.type];
+			const url = file.type === 'external' ? file.external?.url : file.file?.url;
+			const caption = renderRichText(file.caption || []);
+			return url ? `<p><a href="${escapeAttribute(url)}">${caption || escapeHtml(url)}</a></p>` : '';
+		}
 		default:
-			return text ? `${text}${children ? `\n\n${children}` : ''}` : children;
+			return text ? `<p>${text}</p>${children ? `\n\n${children}` : ''}` : children;
 	}
 };
 

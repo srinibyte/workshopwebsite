@@ -10,6 +10,9 @@ dist
 /.svelte-kit
 /build
 
+# Generated Notion media
+public/uploads/notion/
+
 # OS
 .DS_Store
 Thumbs.db
