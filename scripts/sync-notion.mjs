@@ -232,7 +232,7 @@ const shouldPublish = (page) => {
 	const draftProperty = getProperty(page.properties, ['Draft', 'draft']);
 	if (draftProperty?.type === 'checkbox' && draftProperty.checkbox) return false;
 
-	const published = getProperty(page.properties, ['Published', 'published']);
+	const published = getProperty(page.properties, ['PUBLISH', 'Publish', 'Published', 'publish', 'published']);
 	if (published?.type === 'checkbox') return Boolean(published.checkbox);
 
 	const status = getProperty(page.properties, ['Status', 'status']);

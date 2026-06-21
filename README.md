@@ -123,6 +123,7 @@ Blog database:
 - `Slug`: text, optional
 - `Subtitle / Dek` or `Description`: text
 - `Date` or `Publish Date`: date
+- `PUBLISH`: checkbox, recommended publish switch
 - `Draft`: checkbox
 - `Tags`: multi-select
 - `Cover Image`: files, optional
@@ -135,6 +136,7 @@ Notes database:
 - `Slug`: text, optional
 - `Summary`: text, optional
 - `Date`: date
+- `PUBLISH`: checkbox, recommended publish switch
 - `Type` or `Kind`: select with `bookmark`, `photo`, or `note`
 - `Draft`: checkbox
 - `Tags`: multi-select
@@ -149,6 +151,7 @@ Projects database:
 - `Slug`: text, optional
 - `Description`: text
 - `Date`: date
+- `PUBLISH`: checkbox, recommended publish switch
 - `Draft`: checkbox
 - `Status`: select with `idea`, `active`, `paused`, or `shipped`
 - `Tags`: multi-select
@@ -166,7 +169,7 @@ page body.
 
 Publishing rules:
 
-- If `Published` exists, it must be checked.
+- If `PUBLISH`, `Publish`, or `Published` exists, it must be checked.
 - If `Status` exists, it must be `Published`, `Live`, or `Public`.
 - If neither exists and `Draft` exists, `Draft` must be unchecked.
 - `Draft` always wins: checked draft rows never publish.
